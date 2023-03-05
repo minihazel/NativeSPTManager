@@ -32,15 +32,25 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainWindow));
             this.displayServerPath = new System.Windows.Forms.Label();
             this.topPanel = new System.Windows.Forms.Panel();
-            this.managerMenu = new System.Windows.Forms.ComboBox();
-            this.bRestartApp = new System.Windows.Forms.Button();
+            this.bTheme = new System.Windows.Forms.Button();
             this.serverPath = new System.Windows.Forms.Label();
-            this.bRefresh = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.panelServerMods = new System.Windows.Forms.TabPage();
             this.serverOptionsPanel = new System.Windows.Forms.GroupBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.btnServerConfigRestore = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnServerConfigEditNumber = new System.Windows.Forms.TextBox();
+            this.btnServerConfigLineDown = new System.Windows.Forms.Button();
+            this.btnServerConfigLineUp = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnServerConfigToggle = new System.Windows.Forms.Button();
             this.serverConfigDisplayLabel = new System.Windows.Forms.Label();
-            this.btnServerConfigSave = new System.Windows.Forms.Button();
             this.btnServerConfigValidate = new System.Windows.Forms.Button();
             this.lblServerConfigPlaceholder = new System.Windows.Forms.Label();
             this.btnServerConfigOpen = new System.Windows.Forms.Button();
@@ -80,6 +90,9 @@
             this.serverDisplayMods = new System.Windows.Forms.ComboBox();
             this.panelClientMods = new System.Windows.Forms.TabPage();
             this.clientOptionsPanel = new System.Windows.Forms.GroupBox();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
             this.clientConfigDisplayLabel = new System.Windows.Forms.Label();
             this.btnClientConfigSave = new System.Windows.Forms.Button();
             this.clientConfigPlaceholder = new System.Windows.Forms.Label();
@@ -90,6 +103,7 @@
             this.clientDisplayConfig = new System.Windows.Forms.ComboBox();
             this.label20 = new System.Windows.Forms.Label();
             this.clientModsPanel = new System.Windows.Forms.GroupBox();
+            this.panel7 = new System.Windows.Forms.Panel();
             this.btnClientModDelete = new System.Windows.Forms.Button();
             this.clientNameToggle = new System.Windows.Forms.Button();
             this.btnClientModDisable = new System.Windows.Forms.Button();
@@ -112,29 +126,47 @@
             this.lblDisabledModTypeTitle = new System.Windows.Forms.Label();
             this.disabledDisplayMods = new System.Windows.Forms.ComboBox();
             this.panelProfile = new System.Windows.Forms.TabPage();
+            this.profileNotice = new System.Windows.Forms.Label();
             this.profileHealthPanel = new System.Windows.Forms.GroupBox();
+            this.panel21 = new System.Windows.Forms.Panel();
             this.healthTotalBox = new System.Windows.Forms.Panel();
+            this.healthTotalMax = new System.Windows.Forms.TextBox();
+            this.panel20 = new System.Windows.Forms.Panel();
             this.healthTotal = new System.Windows.Forms.TextBox();
             this.healthTotalTitle = new System.Windows.Forms.Label();
             this.healthRightLegBox = new System.Windows.Forms.Panel();
+            this.healthRightLegMax = new System.Windows.Forms.TextBox();
+            this.panel19 = new System.Windows.Forms.Panel();
             this.healthRightLeg = new System.Windows.Forms.TextBox();
             this.healthRightLegTitle = new System.Windows.Forms.Label();
             this.healthLeftLegBox = new System.Windows.Forms.Panel();
+            this.healthLeftLegMax = new System.Windows.Forms.TextBox();
+            this.panel18 = new System.Windows.Forms.Panel();
             this.healthLeftLeg = new System.Windows.Forms.TextBox();
             this.healthLeftLegTitle = new System.Windows.Forms.Label();
             this.healthStomachBox = new System.Windows.Forms.Panel();
+            this.healthStomachMax = new System.Windows.Forms.TextBox();
+            this.panel17 = new System.Windows.Forms.Panel();
             this.healthStomach = new System.Windows.Forms.TextBox();
             this.healthStomachTitle = new System.Windows.Forms.Label();
             this.healthChestBox = new System.Windows.Forms.Panel();
+            this.healthChestMax = new System.Windows.Forms.TextBox();
+            this.panel12 = new System.Windows.Forms.Panel();
             this.healthChest = new System.Windows.Forms.TextBox();
             this.healthChestTitle = new System.Windows.Forms.Label();
             this.healthRightArmBox = new System.Windows.Forms.Panel();
+            this.healthRightArmMax = new System.Windows.Forms.TextBox();
+            this.panel10 = new System.Windows.Forms.Panel();
             this.healthRightArm = new System.Windows.Forms.TextBox();
             this.healthRightArmTitle = new System.Windows.Forms.Label();
             this.healthLeftArmBox = new System.Windows.Forms.Panel();
+            this.healthLeftArmMax = new System.Windows.Forms.TextBox();
+            this.panel9 = new System.Windows.Forms.Panel();
             this.healthLeftArm = new System.Windows.Forms.TextBox();
             this.healthLeftArmTitle = new System.Windows.Forms.Label();
             this.healthHeadBox = new System.Windows.Forms.Panel();
+            this.healthHeadMax = new System.Windows.Forms.TextBox();
+            this.panel11 = new System.Windows.Forms.Panel();
             this.healthHead = new System.Windows.Forms.TextBox();
             this.healthHeadTitle = new System.Windows.Forms.Label();
             this.profileOptionsPanel = new System.Windows.Forms.GroupBox();
@@ -162,6 +194,14 @@
             this.displayProfiles = new System.Windows.Forms.ComboBox();
             this.panelSettings = new System.Windows.Forms.TabPage();
             this.appSettingsPanel = new System.Windows.Forms.GroupBox();
+            this.appServerSettings = new System.Windows.Forms.GroupBox();
+            this.btnAppRestart = new System.Windows.Forms.Button();
+            this.btnAppRefreshUI = new System.Windows.Forms.Button();
+            this.lblAppProfileEditingTitle = new System.Windows.Forms.Label();
+            this.btnAppClearCache = new System.Windows.Forms.Button();
+            this.lblAppLauncherToggle = new System.Windows.Forms.Button();
+            this.lblAppProfileEditingToggle = new System.Windows.Forms.Button();
+            this.lblAppLauncherTitle = new System.Windows.Forms.Label();
             this.btnAppServerBrowse = new System.Windows.Forms.Button();
             this.btnAppReset = new System.Windows.Forms.Button();
             this.lblAppServerPathBox = new System.Windows.Forms.Panel();
@@ -171,6 +211,10 @@
             this.btnLauncherEndProcess = new System.Windows.Forms.Button();
             this.launcherServerOutputBox = new System.Windows.Forms.Panel();
             this.launcherServerOutput = new System.Windows.Forms.RichTextBox();
+            this.panelRunOptions = new System.Windows.Forms.GroupBox();
+            this.btnLauncherStartProcess = new System.Windows.Forms.Button();
+            this.btnLauncherStartLauncher = new System.Windows.Forms.Button();
+            this.lblLauncherServerInfo = new System.Windows.Forms.Label();
             this.watermark = new System.Windows.Forms.Label();
             this.counterTotalMods = new System.Windows.Forms.Label();
             this.counterServerMods = new System.Windows.Forms.Label();
@@ -185,8 +229,9 @@
             this.panel15 = new System.Windows.Forms.Panel();
             this.panel16 = new System.Windows.Forms.Panel();
             this.sortingTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.profileNotice = new System.Windows.Forms.Label();
-            this.btnServerConfigToggle = new System.Windows.Forms.Button();
+            this.btnAppViewChangelog = new System.Windows.Forms.Button();
+            this.appChangelogBox = new System.Windows.Forms.Panel();
+            this.appChangelog = new System.Windows.Forms.RichTextBox();
             this.topPanel.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.panelServerMods.SuspendLayout();
@@ -226,13 +271,16 @@
             this.lblProfileCharacterIdBox.SuspendLayout();
             this.panelSettings.SuspendLayout();
             this.appSettingsPanel.SuspendLayout();
+            this.appServerSettings.SuspendLayout();
             this.lblAppServerPathBox.SuspendLayout();
             this.panelLauncher.SuspendLayout();
             this.launcherServerOutputBox.SuspendLayout();
+            this.panelRunOptions.SuspendLayout();
             this.panel13.SuspendLayout();
             this.panel14.SuspendLayout();
             this.panel15.SuspendLayout();
             this.panel16.SuspendLayout();
+            this.appChangelogBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // displayServerPath
@@ -251,10 +299,8 @@
             this.topPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.topPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.topPanel.Controls.Add(this.managerMenu);
-            this.topPanel.Controls.Add(this.bRestartApp);
+            this.topPanel.Controls.Add(this.bTheme);
             this.topPanel.Controls.Add(this.serverPath);
-            this.topPanel.Controls.Add(this.bRefresh);
             this.topPanel.Controls.Add(this.displayServerPath);
             this.topPanel.Location = new System.Drawing.Point(0, 0);
             this.topPanel.Name = "topPanel";
@@ -262,34 +308,19 @@
             this.topPanel.TabIndex = 1;
             this.topPanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.topPanel_DragEnter);
             // 
-            // managerMenu
+            // bTheme
             // 
-            this.managerMenu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.managerMenu.Enabled = false;
-            this.managerMenu.Font = new System.Drawing.Font("Bahnschrift SemiLight", 11F);
-            this.managerMenu.FormattingEnabled = true;
-            this.managerMenu.Items.AddRange(new object[] {
-            "Launch SPT-AKI"});
-            this.managerMenu.Location = new System.Drawing.Point(531, 3);
-            this.managerMenu.Name = "managerMenu";
-            this.managerMenu.Size = new System.Drawing.Size(180, 26);
-            this.managerMenu.TabIndex = 35;
-            this.managerMenu.SelectedIndexChanged += new System.EventHandler(this.managerMenu_SelectedIndexChanged);
-            // 
-            // bRestartApp
-            // 
-            this.bRestartApp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRestartApp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.bRestartApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.bRestartApp.ForeColor = System.Drawing.Color.IndianRed;
-            this.bRestartApp.Location = new System.Drawing.Point(717, 2);
-            this.bRestartApp.Name = "bRestartApp";
-            this.bRestartApp.Size = new System.Drawing.Size(127, 30);
-            this.bRestartApp.TabIndex = 34;
-            this.bRestartApp.Text = "Restart";
-            this.bRestartApp.UseVisualStyleBackColor = true;
-            this.bRestartApp.Click += new System.EventHandler(this.bRestartApp_Click);
+            this.bTheme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bTheme.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("bTheme.BackgroundImage")));
+            this.bTheme.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.bTheme.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.bTheme.Enabled = false;
+            this.bTheme.Location = new System.Drawing.Point(942, 2);
+            this.bTheme.Name = "bTheme";
+            this.bTheme.Size = new System.Drawing.Size(32, 32);
+            this.bTheme.TabIndex = 34;
+            this.bTheme.UseVisualStyleBackColor = true;
+            this.bTheme.Click += new System.EventHandler(this.bTheme_Click);
             // 
             // serverPath
             // 
@@ -303,18 +334,6 @@
             this.serverPath.Click += new System.EventHandler(this.serverPath_Click);
             this.serverPath.MouseEnter += new System.EventHandler(this.serverPath_MouseEnter);
             this.serverPath.MouseLeave += new System.EventHandler(this.serverPath_MouseLeave);
-            // 
-            // bRefresh
-            // 
-            this.bRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.bRefresh.Location = new System.Drawing.Point(850, 2);
-            this.bRefresh.Name = "bRefresh";
-            this.bRefresh.Size = new System.Drawing.Size(125, 30);
-            this.bRefresh.TabIndex = 21;
-            this.bRefresh.Text = "Refresh";
-            this.bRefresh.UseVisualStyleBackColor = true;
-            this.bRefresh.Click += new System.EventHandler(this.bRefresh_Click);
             // 
             // tabControl1
             // 
@@ -351,9 +370,20 @@
             this.serverOptionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.serverOptionsPanel.Controls.Add(this.panel4);
+            this.serverOptionsPanel.Controls.Add(this.panel3);
+            this.serverOptionsPanel.Controls.Add(this.btnServerConfigRestore);
+            this.serverOptionsPanel.Controls.Add(this.panel2);
+            this.serverOptionsPanel.Controls.Add(this.label5);
+            this.serverOptionsPanel.Controls.Add(this.label4);
+            this.serverOptionsPanel.Controls.Add(this.label3);
+            this.serverOptionsPanel.Controls.Add(this.label2);
+            this.serverOptionsPanel.Controls.Add(this.btnServerConfigEditNumber);
+            this.serverOptionsPanel.Controls.Add(this.btnServerConfigLineDown);
+            this.serverOptionsPanel.Controls.Add(this.btnServerConfigLineUp);
+            this.serverOptionsPanel.Controls.Add(this.panel1);
             this.serverOptionsPanel.Controls.Add(this.btnServerConfigToggle);
             this.serverOptionsPanel.Controls.Add(this.serverConfigDisplayLabel);
-            this.serverOptionsPanel.Controls.Add(this.btnServerConfigSave);
             this.serverOptionsPanel.Controls.Add(this.btnServerConfigValidate);
             this.serverOptionsPanel.Controls.Add(this.lblServerConfigPlaceholder);
             this.serverOptionsPanel.Controls.Add(this.btnServerConfigOpen);
@@ -368,6 +398,151 @@
             this.serverOptionsPanel.TabStop = false;
             this.serverOptionsPanel.Text = "Config Options";
             // 
+            // panel4
+            // 
+            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Location = new System.Drawing.Point(377, 35);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(1, 26);
+            this.panel4.TabIndex = 43;
+            // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Location = new System.Drawing.Point(6, 74);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(558, 1);
+            this.panel3.TabIndex = 42;
+            // 
+            // btnServerConfigRestore
+            // 
+            this.btnServerConfigRestore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnServerConfigRestore.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnServerConfigRestore.Enabled = false;
+            this.btnServerConfigRestore.Image = ((System.Drawing.Image)(resources.GetObject("btnServerConfigRestore.Image")));
+            this.btnServerConfigRestore.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnServerConfigRestore.Location = new System.Drawing.Point(395, 456);
+            this.btnServerConfigRestore.Name = "btnServerConfigRestore";
+            this.btnServerConfigRestore.Size = new System.Drawing.Size(170, 30);
+            this.btnServerConfigRestore.TabIndex = 41;
+            this.btnServerConfigRestore.Text = "Restore initial config";
+            this.btnServerConfigRestore.UseVisualStyleBackColor = true;
+            this.btnServerConfigRestore.Click += new System.EventHandler(this.btnServerConfigRestore_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Location = new System.Drawing.Point(382, 422);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1, 63);
+            this.panel2.TabIndex = 40;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(128, 467);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(66, 13);
+            this.label5.TabIndex = 39;
+            this.label5.Text = "Edit number:";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(113, 430);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(81, 13);
+            this.label4.TabIndex = 38;
+            this.label4.Text = "Boolean toggle:";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(8, 467);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 13);
+            this.label3.TabIndex = 37;
+            this.label3.Text = "Line down:";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(22, 430);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.TabIndex = 36;
+            this.label2.Text = "Line up:";
+            // 
+            // btnServerConfigEditNumber
+            // 
+            this.btnServerConfigEditNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnServerConfigEditNumber.Enabled = false;
+            this.btnServerConfigEditNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
+            this.btnServerConfigEditNumber.Location = new System.Drawing.Point(200, 458);
+            this.btnServerConfigEditNumber.Name = "btnServerConfigEditNumber";
+            this.btnServerConfigEditNumber.Size = new System.Drawing.Size(168, 27);
+            this.btnServerConfigEditNumber.TabIndex = 35;
+            this.btnServerConfigEditNumber.Text = "0";
+            // 
+            // btnServerConfigLineDown
+            // 
+            this.btnServerConfigLineDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnServerConfigLineDown.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnServerConfigLineDown.Enabled = false;
+            this.btnServerConfigLineDown.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.btnServerConfigLineDown.Image = ((System.Drawing.Image)(resources.GetObject("btnServerConfigLineDown.Image")));
+            this.btnServerConfigLineDown.Location = new System.Drawing.Point(75, 457);
+            this.btnServerConfigLineDown.Name = "btnServerConfigLineDown";
+            this.btnServerConfigLineDown.Size = new System.Drawing.Size(32, 30);
+            this.btnServerConfigLineDown.TabIndex = 34;
+            this.btnServerConfigLineDown.UseVisualStyleBackColor = true;
+            // 
+            // btnServerConfigLineUp
+            // 
+            this.btnServerConfigLineUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnServerConfigLineUp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnServerConfigLineUp.Enabled = false;
+            this.btnServerConfigLineUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.btnServerConfigLineUp.Image = ((System.Drawing.Image)(resources.GetObject("btnServerConfigLineUp.Image")));
+            this.btnServerConfigLineUp.Location = new System.Drawing.Point(75, 421);
+            this.btnServerConfigLineUp.Name = "btnServerConfigLineUp";
+            this.btnServerConfigLineUp.Size = new System.Drawing.Size(32, 30);
+            this.btnServerConfigLineUp.TabIndex = 33;
+            this.btnServerConfigLineUp.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Location = new System.Drawing.Point(6, 415);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(558, 1);
+            this.panel1.TabIndex = 32;
+            // 
+            // btnServerConfigToggle
+            // 
+            this.btnServerConfigToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnServerConfigToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnServerConfigToggle.Enabled = false;
+            this.btnServerConfigToggle.Image = ((System.Drawing.Image)(resources.GetObject("btnServerConfigToggle.Image")));
+            this.btnServerConfigToggle.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnServerConfigToggle.Location = new System.Drawing.Point(199, 421);
+            this.btnServerConfigToggle.Name = "btnServerConfigToggle";
+            this.btnServerConfigToggle.Size = new System.Drawing.Size(170, 30);
+            this.btnServerConfigToggle.TabIndex = 31;
+            this.btnServerConfigToggle.Text = "Toggle true / false";
+            this.btnServerConfigToggle.UseVisualStyleBackColor = true;
+            this.btnServerConfigToggle.Click += new System.EventHandler(this.btnServerConfigToggle_Click);
+            // 
             // serverConfigDisplayLabel
             // 
             this.serverConfigDisplayLabel.AutoSize = true;
@@ -378,33 +553,25 @@
             this.serverConfigDisplayLabel.Text = "{configName}";
             this.serverConfigDisplayLabel.Visible = false;
             // 
-            // btnServerConfigSave
-            // 
-            this.btnServerConfigSave.Enabled = false;
-            this.btnServerConfigSave.Location = new System.Drawing.Point(386, 33);
-            this.btnServerConfigSave.Name = "btnServerConfigSave";
-            this.btnServerConfigSave.Size = new System.Drawing.Size(178, 30);
-            this.btnServerConfigSave.TabIndex = 23;
-            this.btnServerConfigSave.Text = "Save Config";
-            this.btnServerConfigSave.UseVisualStyleBackColor = true;
-            this.btnServerConfigSave.Click += new System.EventHandler(this.btnServerConfigSave_Click);
-            // 
             // btnServerConfigValidate
             // 
-            this.btnServerConfigValidate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnServerConfigValidate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnServerConfigValidate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnServerConfigValidate.Enabled = false;
-            this.btnServerConfigValidate.Location = new System.Drawing.Point(386, 416);
+            this.btnServerConfigValidate.Image = ((System.Drawing.Image)(resources.GetObject("btnServerConfigValidate.Image")));
+            this.btnServerConfigValidate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnServerConfigValidate.Location = new System.Drawing.Point(386, 34);
             this.btnServerConfigValidate.Name = "btnServerConfigValidate";
-            this.btnServerConfigValidate.Size = new System.Drawing.Size(178, 30);
+            this.btnServerConfigValidate.Size = new System.Drawing.Size(178, 28);
             this.btnServerConfigValidate.TabIndex = 22;
-            this.btnServerConfigValidate.Text = "Validate syntax";
+            this.btnServerConfigValidate.Text = "Save Config";
             this.btnServerConfigValidate.UseVisualStyleBackColor = true;
             this.btnServerConfigValidate.Click += new System.EventHandler(this.btnServerConfigValidate_Click);
             // 
             // lblServerConfigPlaceholder
             // 
             this.lblServerConfigPlaceholder.AutoSize = true;
-            this.lblServerConfigPlaceholder.Location = new System.Drawing.Point(3, 75);
+            this.lblServerConfigPlaceholder.Location = new System.Drawing.Point(3, 77);
             this.lblServerConfigPlaceholder.Name = "lblServerConfigPlaceholder";
             this.lblServerConfigPlaceholder.Size = new System.Drawing.Size(40, 13);
             this.lblServerConfigPlaceholder.TabIndex = 21;
@@ -413,10 +580,13 @@
             // btnServerConfigOpen
             // 
             this.btnServerConfigOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnServerConfigOpen.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnServerConfigOpen.Enabled = false;
-            this.btnServerConfigOpen.Location = new System.Drawing.Point(386, 452);
+            this.btnServerConfigOpen.Image = ((System.Drawing.Image)(resources.GetObject("btnServerConfigOpen.Image")));
+            this.btnServerConfigOpen.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnServerConfigOpen.Location = new System.Drawing.Point(395, 421);
             this.btnServerConfigOpen.Name = "btnServerConfigOpen";
-            this.btnServerConfigOpen.Size = new System.Drawing.Size(178, 30);
+            this.btnServerConfigOpen.Size = new System.Drawing.Size(170, 30);
             this.btnServerConfigOpen.TabIndex = 20;
             this.btnServerConfigOpen.Text = "Open in default editor";
             this.btnServerConfigOpen.UseVisualStyleBackColor = true;
@@ -459,7 +629,7 @@
             // serverConfigTitle
             // 
             this.serverConfigTitle.AutoSize = true;
-            this.serverConfigTitle.Location = new System.Drawing.Point(49, 75);
+            this.serverConfigTitle.Location = new System.Drawing.Point(49, 77);
             this.serverConfigTitle.Name = "serverConfigTitle";
             this.serverConfigTitle.Size = new System.Drawing.Size(13, 13);
             this.serverConfigTitle.TabIndex = 12;
@@ -468,13 +638,16 @@
             // 
             // serverDisplayConfigs
             // 
+            this.serverDisplayConfigs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.serverDisplayConfigs.Cursor = System.Windows.Forms.Cursors.Hand;
             this.serverDisplayConfigs.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.serverDisplayConfigs.Enabled = false;
             this.serverDisplayConfigs.Font = new System.Drawing.Font("Bahnschrift SemiLight", 11F);
             this.serverDisplayConfigs.FormattingEnabled = true;
             this.serverDisplayConfigs.Location = new System.Drawing.Point(6, 35);
             this.serverDisplayConfigs.Name = "serverDisplayConfigs";
-            this.serverDisplayConfigs.Size = new System.Drawing.Size(370, 26);
+            this.serverDisplayConfigs.Size = new System.Drawing.Size(362, 26);
             this.serverDisplayConfigs.TabIndex = 2;
             this.serverDisplayConfigs.SelectedIndexChanged += new System.EventHandler(this.serverDisplayConfigs_SelectedIndexChanged);
             // 
@@ -534,6 +707,7 @@
             // 
             // btnServerSortDown
             // 
+            this.btnServerSortDown.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnServerSortDown.Enabled = false;
             this.btnServerSortDown.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.btnServerSortDown.Location = new System.Drawing.Point(44, 54);
@@ -541,11 +715,13 @@
             this.btnServerSortDown.Size = new System.Drawing.Size(32, 32);
             this.btnServerSortDown.TabIndex = 28;
             this.btnServerSortDown.Text = "↓";
+            this.btnServerSortDown.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnServerSortDown.UseVisualStyleBackColor = true;
             this.btnServerSortDown.Click += new System.EventHandler(this.btnServerSortDown_Click);
             // 
             // btnServerSortUp
             // 
+            this.btnServerSortUp.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnServerSortUp.Enabled = false;
             this.btnServerSortUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.btnServerSortUp.Location = new System.Drawing.Point(5, 54);
@@ -553,6 +729,7 @@
             this.btnServerSortUp.Size = new System.Drawing.Size(32, 32);
             this.btnServerSortUp.TabIndex = 27;
             this.btnServerSortUp.Text = "↑";
+            this.btnServerSortUp.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnServerSortUp.UseVisualStyleBackColor = true;
             this.btnServerSortUp.Click += new System.EventHandler(this.btnServerSortUp_Click);
             // 
@@ -566,6 +743,7 @@
             // 
             // btnServerSortAlphabetical
             // 
+            this.btnServerSortAlphabetical.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnServerSortAlphabetical.Enabled = false;
             this.btnServerSortAlphabetical.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.btnServerSortAlphabetical.Location = new System.Drawing.Point(308, 54);
@@ -581,9 +759,12 @@
             // 
             this.btnServerModDelete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnServerModDelete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnServerModDelete.Enabled = false;
             this.btnServerModDelete.ForeColor = System.Drawing.Color.Red;
-            this.btnServerModDelete.Location = new System.Drawing.Point(6, 426);
+            this.btnServerModDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnServerModDelete.Image")));
+            this.btnServerModDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnServerModDelete.Location = new System.Drawing.Point(6, 461);
             this.btnServerModDelete.Name = "btnServerModDelete";
             this.btnServerModDelete.Size = new System.Drawing.Size(334, 30);
             this.btnServerModDelete.TabIndex = 24;
@@ -655,8 +836,11 @@
             // 
             this.btnServerModDisable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnServerModDisable.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnServerModDisable.Enabled = false;
-            this.btnServerModDisable.Location = new System.Drawing.Point(6, 462);
+            this.btnServerModDisable.Image = ((System.Drawing.Image)(resources.GetObject("btnServerModDisable.Image")));
+            this.btnServerModDisable.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnServerModDisable.Location = new System.Drawing.Point(6, 425);
             this.btnServerModDisable.Name = "btnServerModDisable";
             this.btnServerModDisable.Size = new System.Drawing.Size(334, 30);
             this.btnServerModDisable.TabIndex = 19;
@@ -682,7 +866,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblServerModName.BackColor = System.Drawing.Color.Gainsboro;
             this.lblServerModName.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblServerModName.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblServerModName.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblServerModName.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblServerModName.ForeColor = System.Drawing.Color.Black;
             this.lblServerModName.Location = new System.Drawing.Point(6, 5);
@@ -722,7 +906,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblServerModAkiVersion.BackColor = System.Drawing.Color.Gainsboro;
             this.lblServerModAkiVersion.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblServerModAkiVersion.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblServerModAkiVersion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblServerModAkiVersion.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblServerModAkiVersion.ForeColor = System.Drawing.Color.Black;
             this.lblServerModAkiVersion.Location = new System.Drawing.Point(6, 5);
@@ -762,7 +946,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblServerModSrc.BackColor = System.Drawing.Color.Gainsboro;
             this.lblServerModSrc.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblServerModSrc.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblServerModSrc.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblServerModSrc.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblServerModSrc.ForeColor = System.Drawing.Color.Black;
             this.lblServerModSrc.Location = new System.Drawing.Point(6, 5);
@@ -802,7 +986,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblServerModVersion.BackColor = System.Drawing.Color.Gainsboro;
             this.lblServerModVersion.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblServerModVersion.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblServerModVersion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblServerModVersion.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblServerModVersion.ForeColor = System.Drawing.Color.Black;
             this.lblServerModVersion.Location = new System.Drawing.Point(6, 5);
@@ -842,7 +1026,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblServerModAuthor.BackColor = System.Drawing.Color.Gainsboro;
             this.lblServerModAuthor.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblServerModAuthor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblServerModAuthor.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblServerModAuthor.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblServerModAuthor.ForeColor = System.Drawing.Color.Black;
             this.lblServerModAuthor.Location = new System.Drawing.Point(6, 5);
@@ -866,6 +1050,7 @@
             // 
             // serverDisplayMods
             // 
+            this.serverDisplayMods.Cursor = System.Windows.Forms.Cursors.Hand;
             this.serverDisplayMods.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.serverDisplayMods.Font = new System.Drawing.Font("Bahnschrift SemiLight", 11F);
             this.serverDisplayMods.FormattingEnabled = true;
@@ -892,6 +1077,9 @@
             this.clientOptionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.clientOptionsPanel.Controls.Add(this.panel8);
+            this.clientOptionsPanel.Controls.Add(this.panel5);
+            this.clientOptionsPanel.Controls.Add(this.panel6);
             this.clientOptionsPanel.Controls.Add(this.clientConfigDisplayLabel);
             this.clientOptionsPanel.Controls.Add(this.btnClientConfigSave);
             this.clientOptionsPanel.Controls.Add(this.clientConfigPlaceholder);
@@ -907,6 +1095,35 @@
             this.clientOptionsPanel.TabStop = false;
             this.clientOptionsPanel.Text = "Config Options";
             // 
+            // panel8
+            // 
+            this.panel8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel8.Location = new System.Drawing.Point(6, 454);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(558, 1);
+            this.panel8.TabIndex = 46;
+            // 
+            // panel5
+            // 
+            this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Location = new System.Drawing.Point(377, 35);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(1, 26);
+            this.panel5.TabIndex = 45;
+            // 
+            // panel6
+            // 
+            this.panel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel6.Location = new System.Drawing.Point(6, 74);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(558, 1);
+            this.panel6.TabIndex = 44;
+            // 
             // clientConfigDisplayLabel
             // 
             this.clientConfigDisplayLabel.AutoSize = true;
@@ -919,19 +1136,23 @@
             // 
             // btnClientConfigSave
             // 
+            this.btnClientConfigSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClientConfigSave.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnClientConfigSave.Enabled = false;
-            this.btnClientConfigSave.Location = new System.Drawing.Point(386, 33);
+            this.btnClientConfigSave.Image = ((System.Drawing.Image)(resources.GetObject("btnClientConfigSave.Image")));
+            this.btnClientConfigSave.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnClientConfigSave.Location = new System.Drawing.Point(386, 34);
             this.btnClientConfigSave.Name = "btnClientConfigSave";
-            this.btnClientConfigSave.Size = new System.Drawing.Size(178, 30);
+            this.btnClientConfigSave.Size = new System.Drawing.Size(178, 28);
             this.btnClientConfigSave.TabIndex = 31;
-            this.btnClientConfigSave.Text = "Save config";
+            this.btnClientConfigSave.Text = "Save Config";
             this.btnClientConfigSave.UseVisualStyleBackColor = true;
             this.btnClientConfigSave.Click += new System.EventHandler(this.btnClientConfigSave_Click);
             // 
             // clientConfigPlaceholder
             // 
             this.clientConfigPlaceholder.AutoSize = true;
-            this.clientConfigPlaceholder.Location = new System.Drawing.Point(3, 75);
+            this.clientConfigPlaceholder.Location = new System.Drawing.Point(3, 77);
             this.clientConfigPlaceholder.Name = "clientConfigPlaceholder";
             this.clientConfigPlaceholder.Size = new System.Drawing.Size(40, 13);
             this.clientConfigPlaceholder.TabIndex = 29;
@@ -939,11 +1160,14 @@
             // 
             // btnClientConfigOpen
             // 
-            this.btnClientConfigOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnClientConfigOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClientConfigOpen.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnClientConfigOpen.Enabled = false;
-            this.btnClientConfigOpen.Location = new System.Drawing.Point(6, 416);
+            this.btnClientConfigOpen.Image = ((System.Drawing.Image)(resources.GetObject("btnClientConfigOpen.Image")));
+            this.btnClientConfigOpen.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnClientConfigOpen.Location = new System.Drawing.Point(395, 460);
             this.btnClientConfigOpen.Name = "btnClientConfigOpen";
-            this.btnClientConfigOpen.Size = new System.Drawing.Size(178, 30);
+            this.btnClientConfigOpen.Size = new System.Drawing.Size(170, 30);
             this.btnClientConfigOpen.TabIndex = 28;
             this.btnClientConfigOpen.Text = "Open in default editor";
             this.btnClientConfigOpen.UseVisualStyleBackColor = true;
@@ -959,7 +1183,7 @@
             this.clientConfigBox.Location = new System.Drawing.Point(6, 93);
             this.clientConfigBox.Margin = new System.Windows.Forms.Padding(4);
             this.clientConfigBox.Name = "clientConfigBox";
-            this.clientConfigBox.Size = new System.Drawing.Size(558, 316);
+            this.clientConfigBox.Size = new System.Drawing.Size(558, 354);
             this.clientConfigBox.TabIndex = 27;
             // 
             // clientConfig
@@ -974,14 +1198,14 @@
             this.clientConfig.Location = new System.Drawing.Point(5, 5);
             this.clientConfig.Name = "clientConfig";
             this.clientConfig.ReadOnly = true;
-            this.clientConfig.Size = new System.Drawing.Size(548, 306);
+            this.clientConfig.Size = new System.Drawing.Size(548, 344);
             this.clientConfig.TabIndex = 11;
             this.clientConfig.Text = "";
             // 
             // clientConfigTitle
             // 
             this.clientConfigTitle.AutoSize = true;
-            this.clientConfigTitle.Location = new System.Drawing.Point(49, 75);
+            this.clientConfigTitle.Location = new System.Drawing.Point(49, 77);
             this.clientConfigTitle.Name = "clientConfigTitle";
             this.clientConfigTitle.Size = new System.Drawing.Size(13, 13);
             this.clientConfigTitle.TabIndex = 26;
@@ -990,13 +1214,16 @@
             // 
             // clientDisplayConfig
             // 
+            this.clientDisplayConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.clientDisplayConfig.Cursor = System.Windows.Forms.Cursors.Hand;
             this.clientDisplayConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.clientDisplayConfig.Enabled = false;
             this.clientDisplayConfig.Font = new System.Drawing.Font("Bahnschrift SemiLight", 11F);
             this.clientDisplayConfig.FormattingEnabled = true;
             this.clientDisplayConfig.Location = new System.Drawing.Point(6, 35);
             this.clientDisplayConfig.Name = "clientDisplayConfig";
-            this.clientDisplayConfig.Size = new System.Drawing.Size(370, 26);
+            this.clientDisplayConfig.Size = new System.Drawing.Size(362, 26);
             this.clientDisplayConfig.TabIndex = 24;
             this.clientDisplayConfig.SelectedIndexChanged += new System.EventHandler(this.clientDisplayConfig_SelectedIndexChanged);
             // 
@@ -1013,6 +1240,7 @@
             // 
             // clientModsPanel
             // 
+            this.clientModsPanel.Controls.Add(this.panel7);
             this.clientModsPanel.Controls.Add(this.btnClientModDelete);
             this.clientModsPanel.Controls.Add(this.clientNameToggle);
             this.clientModsPanel.Controls.Add(this.btnClientModDisable);
@@ -1028,14 +1256,25 @@
             this.clientModsPanel.TabStop = false;
             this.clientModsPanel.Text = "Client mods";
             // 
+            // panel7
+            // 
+            this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel7.Location = new System.Drawing.Point(6, 52);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(334, 1);
+            this.panel7.TabIndex = 27;
+            // 
             // btnClientModDelete
             // 
             this.btnClientModDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClientModDelete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnClientModDelete.Enabled = false;
             this.btnClientModDelete.ForeColor = System.Drawing.Color.Red;
-            this.btnClientModDelete.Location = new System.Drawing.Point(6, 187);
+            this.btnClientModDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnClientModDelete.Image")));
+            this.btnClientModDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnClientModDelete.Location = new System.Drawing.Point(6, 186);
             this.btnClientModDelete.Name = "btnClientModDelete";
             this.btnClientModDelete.Size = new System.Drawing.Size(334, 30);
             this.btnClientModDelete.TabIndex = 25;
@@ -1059,8 +1298,11 @@
             // 
             this.btnClientModDisable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClientModDisable.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnClientModDisable.Enabled = false;
-            this.btnClientModDisable.Location = new System.Drawing.Point(6, 223);
+            this.btnClientModDisable.Image = ((System.Drawing.Image)(resources.GetObject("btnClientModDisable.Image")));
+            this.btnClientModDisable.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnClientModDisable.Location = new System.Drawing.Point(6, 222);
             this.btnClientModDisable.Name = "btnClientModDisable";
             this.btnClientModDisable.Size = new System.Drawing.Size(334, 30);
             this.btnClientModDisable.TabIndex = 20;
@@ -1086,7 +1328,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblClientModName.BackColor = System.Drawing.Color.Gainsboro;
             this.lblClientModName.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblClientModName.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblClientModName.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblClientModName.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblClientModName.ForeColor = System.Drawing.Color.Black;
             this.lblClientModName.Location = new System.Drawing.Point(6, 5);
@@ -1151,6 +1393,7 @@
             // 
             this.clientDisplayMods.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.clientDisplayMods.Cursor = System.Windows.Forms.Cursors.Hand;
             this.clientDisplayMods.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.clientDisplayMods.Font = new System.Drawing.Font("Bahnschrift SemiLight", 11F);
             this.clientDisplayMods.FormattingEnabled = true;
@@ -1192,6 +1435,7 @@
             this.btnDisabledModDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDisabledModDelete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDisabledModDelete.Enabled = false;
             this.btnDisabledModDelete.ForeColor = System.Drawing.Color.Red;
             this.btnDisabledModDelete.Location = new System.Drawing.Point(6, 187);
@@ -1206,6 +1450,7 @@
             // 
             this.btnDisabledModToggle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDisabledModToggle.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDisabledModToggle.Enabled = false;
             this.btnDisabledModToggle.Location = new System.Drawing.Point(6, 223);
             this.btnDisabledModToggle.Name = "btnDisabledModToggle";
@@ -1233,7 +1478,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDisabledModName.BackColor = System.Drawing.Color.Gainsboro;
             this.lblDisabledModName.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblDisabledModName.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblDisabledModName.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblDisabledModName.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDisabledModName.ForeColor = System.Drawing.Color.Black;
             this.lblDisabledModName.Location = new System.Drawing.Point(6, 5);
@@ -1295,6 +1540,7 @@
             // 
             // disabledDisplayMods
             // 
+            this.disabledDisplayMods.Cursor = System.Windows.Forms.Cursors.Hand;
             this.disabledDisplayMods.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.disabledDisplayMods.Font = new System.Drawing.Font("Bahnschrift SemiLight", 11F);
             this.disabledDisplayMods.FormattingEnabled = true;
@@ -1317,10 +1563,23 @@
             this.panelProfile.TabIndex = 4;
             this.panelProfile.Text = "Profile";
             // 
+            // profileNotice
+            // 
+            this.profileNotice.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F);
+            this.profileNotice.ForeColor = System.Drawing.Color.IndianRed;
+            this.profileNotice.Location = new System.Drawing.Point(7, 455);
+            this.profileNotice.Name = "profileNotice";
+            this.profileNotice.Size = new System.Drawing.Size(747, 63);
+            this.profileNotice.TabIndex = 5;
+            this.profileNotice.Text = "PLEASE READ!\r\nThis section is unfinished! You can read any of your profiles, but " +
+    "you won\'t be able to edit them.";
+            this.profileNotice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // profileHealthPanel
             // 
             this.profileHealthPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.profileHealthPanel.Controls.Add(this.panel21);
             this.profileHealthPanel.Controls.Add(this.healthTotalBox);
             this.profileHealthPanel.Controls.Add(this.healthTotalTitle);
             this.profileHealthPanel.Controls.Add(this.healthRightLegBox);
@@ -1339,61 +1598,122 @@
             this.profileHealthPanel.Controls.Add(this.healthHeadTitle);
             this.profileHealthPanel.Location = new System.Drawing.Point(372, 6);
             this.profileHealthPanel.Name = "profileHealthPanel";
-            this.profileHealthPanel.Size = new System.Drawing.Size(382, 444);
+            this.profileHealthPanel.Size = new System.Drawing.Size(568, 444);
             this.profileHealthPanel.TabIndex = 4;
             this.profileHealthPanel.TabStop = false;
             this.profileHealthPanel.Text = "Health";
             // 
+            // panel21
+            // 
+            this.panel21.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel21.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel21.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel21.Location = new System.Drawing.Point(18, 141);
+            this.panel21.Margin = new System.Windows.Forms.Padding(4);
+            this.panel21.Name = "panel21";
+            this.panel21.Size = new System.Drawing.Size(532, 1);
+            this.panel21.TabIndex = 29;
+            // 
             // healthTotalBox
             // 
-            this.healthTotalBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthTotalBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthTotalBox.Controls.Add(this.healthTotalMax);
+            this.healthTotalBox.Controls.Add(this.panel20);
             this.healthTotalBox.Controls.Add(this.healthTotal);
-            this.healthTotalBox.Location = new System.Drawing.Point(102, 359);
+            this.healthTotalBox.Location = new System.Drawing.Point(229, 77);
             this.healthTotalBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthTotalBox.Name = "healthTotalBox";
-            this.healthTotalBox.Size = new System.Drawing.Size(178, 30);
+            this.healthTotalBox.Size = new System.Drawing.Size(111, 30);
             this.healthTotalBox.TabIndex = 26;
+            // 
+            // healthTotalMax
+            // 
+            this.healthTotalMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthTotalMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthTotalMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthTotalMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthTotalMax.ForeColor = System.Drawing.Color.Black;
+            this.healthTotalMax.Location = new System.Drawing.Point(60, 3);
+            this.healthTotalMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthTotalMax.Name = "healthTotalMax";
+            this.healthTotalMax.ReadOnly = true;
+            this.healthTotalMax.Size = new System.Drawing.Size(46, 23);
+            this.healthTotalMax.TabIndex = 32;
+            this.healthTotalMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel20
+            // 
+            this.panel20.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel20.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel20.Location = new System.Drawing.Point(55, 0);
+            this.panel20.Margin = new System.Windows.Forms.Padding(4);
+            this.panel20.Name = "panel20";
+            this.panel20.Size = new System.Drawing.Size(1, 30);
+            this.panel20.TabIndex = 31;
             // 
             // healthTotal
             // 
-            this.healthTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthTotal.BackColor = System.Drawing.Color.Gainsboro;
             this.healthTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthTotal.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.healthTotal.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthTotal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthTotal.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthTotal.ForeColor = System.Drawing.Color.Black;
-            this.healthTotal.Location = new System.Drawing.Point(6, 5);
+            this.healthTotal.Location = new System.Drawing.Point(6, 3);
             this.healthTotal.Margin = new System.Windows.Forms.Padding(4);
             this.healthTotal.Name = "healthTotal";
             this.healthTotal.ReadOnly = true;
-            this.healthTotal.Size = new System.Drawing.Size(168, 20);
+            this.healthTotal.Size = new System.Drawing.Size(46, 23);
             this.healthTotal.TabIndex = 0;
             this.healthTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthTotalTitle
             // 
-            this.healthTotalTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthTotalTitle.Location = new System.Drawing.Point(102, 340);
+            this.healthTotalTitle.Location = new System.Drawing.Point(229, 58);
             this.healthTotalTitle.Name = "healthTotalTitle";
-            this.healthTotalTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthTotalTitle.Size = new System.Drawing.Size(111, 13);
             this.healthTotalTitle.TabIndex = 25;
             this.healthTotalTitle.Text = "Total";
             this.healthTotalTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // healthRightLegBox
             // 
-            this.healthRightLegBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.healthRightLegBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthRightLegBox.Controls.Add(this.healthRightLegMax);
+            this.healthRightLegBox.Controls.Add(this.panel19);
             this.healthRightLegBox.Controls.Add(this.healthRightLeg);
-            this.healthRightLegBox.Location = new System.Drawing.Point(198, 293);
+            this.healthRightLegBox.Location = new System.Drawing.Point(304, 332);
             this.healthRightLegBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthRightLegBox.Name = "healthRightLegBox";
-            this.healthRightLegBox.Size = new System.Drawing.Size(178, 30);
+            this.healthRightLegBox.Size = new System.Drawing.Size(111, 30);
             this.healthRightLegBox.TabIndex = 24;
+            // 
+            // healthRightLegMax
+            // 
+            this.healthRightLegMax.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.healthRightLegMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthRightLegMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthRightLegMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthRightLegMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthRightLegMax.ForeColor = System.Drawing.Color.Black;
+            this.healthRightLegMax.Location = new System.Drawing.Point(60, 5);
+            this.healthRightLegMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthRightLegMax.Name = "healthRightLegMax";
+            this.healthRightLegMax.ReadOnly = true;
+            this.healthRightLegMax.Size = new System.Drawing.Size(46, 20);
+            this.healthRightLegMax.TabIndex = 32;
+            this.healthRightLegMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel19
+            // 
+            this.panel19.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel19.Location = new System.Drawing.Point(55, 0);
+            this.panel19.Margin = new System.Windows.Forms.Padding(4);
+            this.panel19.Name = "panel19";
+            this.panel19.Size = new System.Drawing.Size(1, 30);
+            this.panel19.TabIndex = 31;
             // 
             // healthRightLeg
             // 
@@ -1401,158 +1721,247 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.healthRightLeg.BackColor = System.Drawing.Color.Gainsboro;
             this.healthRightLeg.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthRightLeg.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.healthRightLeg.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.healthRightLeg.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthRightLeg.ForeColor = System.Drawing.Color.Black;
             this.healthRightLeg.Location = new System.Drawing.Point(6, 5);
             this.healthRightLeg.Margin = new System.Windows.Forms.Padding(4);
             this.healthRightLeg.Name = "healthRightLeg";
             this.healthRightLeg.ReadOnly = true;
-            this.healthRightLeg.Size = new System.Drawing.Size(168, 20);
+            this.healthRightLeg.Size = new System.Drawing.Size(46, 20);
             this.healthRightLeg.TabIndex = 0;
             this.healthRightLeg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthRightLegTitle
             // 
-            this.healthRightLegTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthRightLegTitle.Location = new System.Drawing.Point(198, 274);
+            this.healthRightLegTitle.Location = new System.Drawing.Point(304, 313);
             this.healthRightLegTitle.Name = "healthRightLegTitle";
-            this.healthRightLegTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthRightLegTitle.Size = new System.Drawing.Size(111, 13);
             this.healthRightLegTitle.TabIndex = 23;
             this.healthRightLegTitle.Text = "Right leg";
             this.healthRightLegTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // healthLeftLegBox
             // 
-            this.healthLeftLegBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthLeftLegBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthLeftLegBox.Controls.Add(this.healthLeftLegMax);
+            this.healthLeftLegBox.Controls.Add(this.panel18);
             this.healthLeftLegBox.Controls.Add(this.healthLeftLeg);
-            this.healthLeftLegBox.Location = new System.Drawing.Point(6, 293);
+            this.healthLeftLegBox.Location = new System.Drawing.Point(153, 332);
             this.healthLeftLegBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthLeftLegBox.Name = "healthLeftLegBox";
-            this.healthLeftLegBox.Size = new System.Drawing.Size(178, 30);
+            this.healthLeftLegBox.Size = new System.Drawing.Size(111, 30);
             this.healthLeftLegBox.TabIndex = 22;
+            // 
+            // healthLeftLegMax
+            // 
+            this.healthLeftLegMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthLeftLegMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthLeftLegMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthLeftLegMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthLeftLegMax.ForeColor = System.Drawing.Color.Black;
+            this.healthLeftLegMax.Location = new System.Drawing.Point(60, 5);
+            this.healthLeftLegMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthLeftLegMax.Name = "healthLeftLegMax";
+            this.healthLeftLegMax.ReadOnly = true;
+            this.healthLeftLegMax.Size = new System.Drawing.Size(46, 20);
+            this.healthLeftLegMax.TabIndex = 31;
+            this.healthLeftLegMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel18
+            // 
+            this.panel18.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel18.Location = new System.Drawing.Point(55, 0);
+            this.panel18.Margin = new System.Windows.Forms.Padding(4);
+            this.panel18.Name = "panel18";
+            this.panel18.Size = new System.Drawing.Size(1, 30);
+            this.panel18.TabIndex = 30;
             // 
             // healthLeftLeg
             // 
-            this.healthLeftLeg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthLeftLeg.BackColor = System.Drawing.Color.Gainsboro;
             this.healthLeftLeg.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthLeftLeg.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.healthLeftLeg.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.healthLeftLeg.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthLeftLeg.ForeColor = System.Drawing.Color.Black;
             this.healthLeftLeg.Location = new System.Drawing.Point(6, 5);
             this.healthLeftLeg.Margin = new System.Windows.Forms.Padding(4);
             this.healthLeftLeg.Name = "healthLeftLeg";
             this.healthLeftLeg.ReadOnly = true;
-            this.healthLeftLeg.Size = new System.Drawing.Size(168, 20);
+            this.healthLeftLeg.Size = new System.Drawing.Size(46, 20);
             this.healthLeftLeg.TabIndex = 0;
             this.healthLeftLeg.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthLeftLegTitle
             // 
-            this.healthLeftLegTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthLeftLegTitle.Location = new System.Drawing.Point(6, 274);
+            this.healthLeftLegTitle.Location = new System.Drawing.Point(153, 313);
             this.healthLeftLegTitle.Name = "healthLeftLegTitle";
-            this.healthLeftLegTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthLeftLegTitle.Size = new System.Drawing.Size(111, 13);
             this.healthLeftLegTitle.TabIndex = 21;
             this.healthLeftLegTitle.Text = "Left leg";
             this.healthLeftLegTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // healthStomachBox
             // 
-            this.healthStomachBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthStomachBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthStomachBox.Controls.Add(this.healthStomachMax);
+            this.healthStomachBox.Controls.Add(this.panel17);
             this.healthStomachBox.Controls.Add(this.healthStomach);
-            this.healthStomachBox.Location = new System.Drawing.Point(102, 226);
+            this.healthStomachBox.Location = new System.Drawing.Point(380, 191);
             this.healthStomachBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthStomachBox.Name = "healthStomachBox";
-            this.healthStomachBox.Size = new System.Drawing.Size(178, 30);
+            this.healthStomachBox.Size = new System.Drawing.Size(111, 30);
             this.healthStomachBox.TabIndex = 20;
+            // 
+            // healthStomachMax
+            // 
+            this.healthStomachMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthStomachMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthStomachMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthStomachMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthStomachMax.ForeColor = System.Drawing.Color.Black;
+            this.healthStomachMax.Location = new System.Drawing.Point(60, 5);
+            this.healthStomachMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthStomachMax.Name = "healthStomachMax";
+            this.healthStomachMax.ReadOnly = true;
+            this.healthStomachMax.Size = new System.Drawing.Size(46, 20);
+            this.healthStomachMax.TabIndex = 30;
+            this.healthStomachMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel17
+            // 
+            this.panel17.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel17.Location = new System.Drawing.Point(55, 0);
+            this.panel17.Margin = new System.Windows.Forms.Padding(4);
+            this.panel17.Name = "panel17";
+            this.panel17.Size = new System.Drawing.Size(1, 30);
+            this.panel17.TabIndex = 29;
             // 
             // healthStomach
             // 
-            this.healthStomach.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthStomach.BackColor = System.Drawing.Color.Gainsboro;
             this.healthStomach.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthStomach.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.healthStomach.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.healthStomach.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthStomach.ForeColor = System.Drawing.Color.Black;
             this.healthStomach.Location = new System.Drawing.Point(6, 5);
             this.healthStomach.Margin = new System.Windows.Forms.Padding(4);
             this.healthStomach.Name = "healthStomach";
             this.healthStomach.ReadOnly = true;
-            this.healthStomach.Size = new System.Drawing.Size(168, 20);
+            this.healthStomach.Size = new System.Drawing.Size(46, 20);
             this.healthStomach.TabIndex = 0;
             this.healthStomach.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthStomachTitle
             // 
-            this.healthStomachTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthStomachTitle.Location = new System.Drawing.Point(102, 207);
+            this.healthStomachTitle.Location = new System.Drawing.Point(380, 172);
             this.healthStomachTitle.Name = "healthStomachTitle";
-            this.healthStomachTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthStomachTitle.Size = new System.Drawing.Size(111, 13);
             this.healthStomachTitle.TabIndex = 19;
             this.healthStomachTitle.Text = "Stomach";
             this.healthStomachTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // healthChestBox
             // 
-            this.healthChestBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthChestBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthChestBox.Controls.Add(this.healthChestMax);
+            this.healthChestBox.Controls.Add(this.panel12);
             this.healthChestBox.Controls.Add(this.healthChest);
-            this.healthChestBox.Location = new System.Drawing.Point(102, 164);
+            this.healthChestBox.Location = new System.Drawing.Point(229, 191);
             this.healthChestBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthChestBox.Name = "healthChestBox";
-            this.healthChestBox.Size = new System.Drawing.Size(178, 30);
+            this.healthChestBox.Size = new System.Drawing.Size(111, 30);
             this.healthChestBox.TabIndex = 18;
+            // 
+            // healthChestMax
+            // 
+            this.healthChestMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthChestMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthChestMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthChestMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthChestMax.ForeColor = System.Drawing.Color.Black;
+            this.healthChestMax.Location = new System.Drawing.Point(60, 5);
+            this.healthChestMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthChestMax.Name = "healthChestMax";
+            this.healthChestMax.ReadOnly = true;
+            this.healthChestMax.Size = new System.Drawing.Size(46, 20);
+            this.healthChestMax.TabIndex = 29;
+            this.healthChestMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel12
+            // 
+            this.panel12.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel12.Location = new System.Drawing.Point(55, 0);
+            this.panel12.Margin = new System.Windows.Forms.Padding(4);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(1, 30);
+            this.panel12.TabIndex = 28;
             // 
             // healthChest
             // 
-            this.healthChest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthChest.BackColor = System.Drawing.Color.Gainsboro;
             this.healthChest.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthChest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.healthChest.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.healthChest.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthChest.ForeColor = System.Drawing.Color.Black;
             this.healthChest.Location = new System.Drawing.Point(6, 5);
             this.healthChest.Margin = new System.Windows.Forms.Padding(4);
             this.healthChest.Name = "healthChest";
             this.healthChest.ReadOnly = true;
-            this.healthChest.Size = new System.Drawing.Size(168, 20);
+            this.healthChest.Size = new System.Drawing.Size(46, 20);
             this.healthChest.TabIndex = 0;
             this.healthChest.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthChestTitle
             // 
-            this.healthChestTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthChestTitle.Location = new System.Drawing.Point(102, 145);
+            this.healthChestTitle.Location = new System.Drawing.Point(229, 172);
             this.healthChestTitle.Name = "healthChestTitle";
-            this.healthChestTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthChestTitle.Size = new System.Drawing.Size(111, 13);
             this.healthChestTitle.TabIndex = 17;
             this.healthChestTitle.Text = "Chest";
             this.healthChestTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // healthRightArmBox
             // 
-            this.healthRightArmBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.healthRightArmBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthRightArmBox.Controls.Add(this.healthRightArmMax);
+            this.healthRightArmBox.Controls.Add(this.panel10);
             this.healthRightArmBox.Controls.Add(this.healthRightArm);
-            this.healthRightArmBox.Location = new System.Drawing.Point(198, 100);
+            this.healthRightArmBox.Location = new System.Drawing.Point(304, 253);
             this.healthRightArmBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthRightArmBox.Name = "healthRightArmBox";
-            this.healthRightArmBox.Size = new System.Drawing.Size(178, 30);
+            this.healthRightArmBox.Size = new System.Drawing.Size(111, 30);
             this.healthRightArmBox.TabIndex = 16;
+            // 
+            // healthRightArmMax
+            // 
+            this.healthRightArmMax.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.healthRightArmMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthRightArmMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthRightArmMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthRightArmMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthRightArmMax.ForeColor = System.Drawing.Color.Black;
+            this.healthRightArmMax.Location = new System.Drawing.Point(60, 5);
+            this.healthRightArmMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthRightArmMax.Name = "healthRightArmMax";
+            this.healthRightArmMax.ReadOnly = true;
+            this.healthRightArmMax.Size = new System.Drawing.Size(46, 20);
+            this.healthRightArmMax.TabIndex = 29;
+            this.healthRightArmMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel10
+            // 
+            this.panel10.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel10.Location = new System.Drawing.Point(55, 0);
+            this.panel10.Margin = new System.Windows.Forms.Padding(4);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(1, 30);
+            this.panel10.TabIndex = 28;
             // 
             // healthRightArm
             // 
@@ -1560,103 +1969,144 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.healthRightArm.BackColor = System.Drawing.Color.Gainsboro;
             this.healthRightArm.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthRightArm.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.healthRightArm.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.healthRightArm.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthRightArm.ForeColor = System.Drawing.Color.Black;
             this.healthRightArm.Location = new System.Drawing.Point(6, 5);
             this.healthRightArm.Margin = new System.Windows.Forms.Padding(4);
             this.healthRightArm.Name = "healthRightArm";
             this.healthRightArm.ReadOnly = true;
-            this.healthRightArm.Size = new System.Drawing.Size(168, 20);
+            this.healthRightArm.Size = new System.Drawing.Size(46, 20);
             this.healthRightArm.TabIndex = 0;
             this.healthRightArm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthRightArmTitle
             // 
-            this.healthRightArmTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthRightArmTitle.Location = new System.Drawing.Point(198, 81);
+            this.healthRightArmTitle.Location = new System.Drawing.Point(304, 234);
             this.healthRightArmTitle.Name = "healthRightArmTitle";
-            this.healthRightArmTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthRightArmTitle.Size = new System.Drawing.Size(111, 13);
             this.healthRightArmTitle.TabIndex = 15;
             this.healthRightArmTitle.Text = "Right arm";
             this.healthRightArmTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // healthLeftArmBox
             // 
-            this.healthLeftArmBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthLeftArmBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthLeftArmBox.Controls.Add(this.healthLeftArmMax);
+            this.healthLeftArmBox.Controls.Add(this.panel9);
             this.healthLeftArmBox.Controls.Add(this.healthLeftArm);
-            this.healthLeftArmBox.Location = new System.Drawing.Point(6, 100);
+            this.healthLeftArmBox.Location = new System.Drawing.Point(153, 253);
             this.healthLeftArmBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthLeftArmBox.Name = "healthLeftArmBox";
-            this.healthLeftArmBox.Size = new System.Drawing.Size(178, 30);
+            this.healthLeftArmBox.Size = new System.Drawing.Size(111, 30);
             this.healthLeftArmBox.TabIndex = 14;
+            // 
+            // healthLeftArmMax
+            // 
+            this.healthLeftArmMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthLeftArmMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthLeftArmMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthLeftArmMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthLeftArmMax.ForeColor = System.Drawing.Color.Black;
+            this.healthLeftArmMax.Location = new System.Drawing.Point(60, 5);
+            this.healthLeftArmMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthLeftArmMax.Name = "healthLeftArmMax";
+            this.healthLeftArmMax.ReadOnly = true;
+            this.healthLeftArmMax.Size = new System.Drawing.Size(46, 20);
+            this.healthLeftArmMax.TabIndex = 28;
+            this.healthLeftArmMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel9
+            // 
+            this.panel9.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel9.Location = new System.Drawing.Point(55, 0);
+            this.panel9.Margin = new System.Windows.Forms.Padding(4);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(1, 30);
+            this.panel9.TabIndex = 27;
             // 
             // healthLeftArm
             // 
-            this.healthLeftArm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthLeftArm.BackColor = System.Drawing.Color.Gainsboro;
             this.healthLeftArm.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthLeftArm.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.healthLeftArm.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.healthLeftArm.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthLeftArm.ForeColor = System.Drawing.Color.Black;
             this.healthLeftArm.Location = new System.Drawing.Point(6, 5);
             this.healthLeftArm.Margin = new System.Windows.Forms.Padding(4);
             this.healthLeftArm.Name = "healthLeftArm";
             this.healthLeftArm.ReadOnly = true;
-            this.healthLeftArm.Size = new System.Drawing.Size(168, 20);
+            this.healthLeftArm.Size = new System.Drawing.Size(46, 20);
             this.healthLeftArm.TabIndex = 0;
             this.healthLeftArm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthLeftArmTitle
             // 
-            this.healthLeftArmTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthLeftArmTitle.Location = new System.Drawing.Point(6, 81);
+            this.healthLeftArmTitle.Location = new System.Drawing.Point(153, 234);
             this.healthLeftArmTitle.Name = "healthLeftArmTitle";
-            this.healthLeftArmTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthLeftArmTitle.Size = new System.Drawing.Size(111, 13);
             this.healthLeftArmTitle.TabIndex = 13;
             this.healthLeftArmTitle.Text = "Left arm";
             this.healthLeftArmTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // healthHeadBox
             // 
-            this.healthHeadBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthHeadBox.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthHeadBox.Controls.Add(this.healthHeadMax);
+            this.healthHeadBox.Controls.Add(this.panel11);
             this.healthHeadBox.Controls.Add(this.healthHead);
-            this.healthHeadBox.Location = new System.Drawing.Point(102, 38);
+            this.healthHeadBox.Location = new System.Drawing.Point(78, 191);
             this.healthHeadBox.Margin = new System.Windows.Forms.Padding(4);
             this.healthHeadBox.Name = "healthHeadBox";
-            this.healthHeadBox.Size = new System.Drawing.Size(178, 30);
+            this.healthHeadBox.Size = new System.Drawing.Size(111, 30);
             this.healthHeadBox.TabIndex = 12;
+            // 
+            // healthHeadMax
+            // 
+            this.healthHeadMax.BackColor = System.Drawing.Color.Gainsboro;
+            this.healthHeadMax.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.healthHeadMax.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.healthHeadMax.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.healthHeadMax.ForeColor = System.Drawing.Color.Black;
+            this.healthHeadMax.Location = new System.Drawing.Point(60, 5);
+            this.healthHeadMax.Margin = new System.Windows.Forms.Padding(4);
+            this.healthHeadMax.Name = "healthHeadMax";
+            this.healthHeadMax.ReadOnly = true;
+            this.healthHeadMax.Size = new System.Drawing.Size(46, 20);
+            this.healthHeadMax.TabIndex = 29;
+            this.healthHeadMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel11
+            // 
+            this.panel11.BackColor = System.Drawing.Color.Gainsboro;
+            this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel11.Location = new System.Drawing.Point(55, 0);
+            this.panel11.Margin = new System.Windows.Forms.Padding(4);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(1, 30);
+            this.panel11.TabIndex = 28;
             // 
             // healthHead
             // 
-            this.healthHead.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.healthHead.BackColor = System.Drawing.Color.Gainsboro;
             this.healthHead.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.healthHead.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.healthHead.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.healthHead.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.healthHead.ForeColor = System.Drawing.Color.Black;
             this.healthHead.Location = new System.Drawing.Point(6, 5);
             this.healthHead.Margin = new System.Windows.Forms.Padding(4);
             this.healthHead.Name = "healthHead";
             this.healthHead.ReadOnly = true;
-            this.healthHead.Size = new System.Drawing.Size(168, 20);
+            this.healthHead.Size = new System.Drawing.Size(46, 20);
             this.healthHead.TabIndex = 0;
             this.healthHead.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // healthHeadTitle
             // 
-            this.healthHeadTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.healthHeadTitle.Location = new System.Drawing.Point(102, 19);
+            this.healthHeadTitle.Location = new System.Drawing.Point(78, 172);
             this.healthHeadTitle.Name = "healthHeadTitle";
-            this.healthHeadTitle.Size = new System.Drawing.Size(178, 13);
+            this.healthHeadTitle.Size = new System.Drawing.Size(111, 13);
             this.healthHeadTitle.TabIndex = 11;
             this.healthHeadTitle.Text = "Head";
             this.healthHeadTitle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -1718,7 +2168,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProfileGameUsername.BackColor = System.Drawing.Color.Gainsboro;
             this.lblProfileGameUsername.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblProfileGameUsername.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblProfileGameUsername.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblProfileGameUsername.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProfileGameUsername.ForeColor = System.Drawing.Color.Black;
             this.lblProfileGameUsername.Location = new System.Drawing.Point(6, 5);
@@ -1787,6 +2237,7 @@
             // 
             this.btnProfileDelete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnProfileDelete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnProfileDelete.Enabled = false;
             this.btnProfileDelete.ForeColor = System.Drawing.Color.Red;
             this.btnProfileDelete.Location = new System.Drawing.Point(6, 408);
@@ -1795,6 +2246,7 @@
             this.btnProfileDelete.TabIndex = 19;
             this.btnProfileDelete.Text = "Delete profile";
             this.btnProfileDelete.UseVisualStyleBackColor = true;
+            this.btnProfileDelete.Click += new System.EventHandler(this.btnProfileDelete_Click);
             // 
             // lblProfileEditionBox
             // 
@@ -1814,7 +2266,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProfileEdition.BackColor = System.Drawing.Color.Gainsboro;
             this.lblProfileEdition.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblProfileEdition.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblProfileEdition.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblProfileEdition.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProfileEdition.ForeColor = System.Drawing.Color.Black;
             this.lblProfileEdition.Location = new System.Drawing.Point(6, 5);
@@ -1853,7 +2305,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProfilePassword.BackColor = System.Drawing.Color.Gainsboro;
             this.lblProfilePassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblProfilePassword.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblProfilePassword.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblProfilePassword.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProfilePassword.ForeColor = System.Drawing.Color.Black;
             this.lblProfilePassword.Location = new System.Drawing.Point(6, 5);
@@ -1892,7 +2344,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProfileUsername.BackColor = System.Drawing.Color.Gainsboro;
             this.lblProfileUsername.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblProfileUsername.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblProfileUsername.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblProfileUsername.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProfileUsername.ForeColor = System.Drawing.Color.Black;
             this.lblProfileUsername.Location = new System.Drawing.Point(6, 5);
@@ -1931,7 +2383,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProfileCharacterId.BackColor = System.Drawing.Color.Gainsboro;
             this.lblProfileCharacterId.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblProfileCharacterId.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblProfileCharacterId.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblProfileCharacterId.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProfileCharacterId.ForeColor = System.Drawing.Color.Black;
             this.lblProfileCharacterId.Location = new System.Drawing.Point(6, 5);
@@ -1940,6 +2392,7 @@
             this.lblProfileCharacterId.ReadOnly = true;
             this.lblProfileCharacterId.Size = new System.Drawing.Size(276, 20);
             this.lblProfileCharacterId.TabIndex = 0;
+            this.lblProfileCharacterId.TextChanged += new System.EventHandler(this.lblProfileCharacterId_TextChanged);
             // 
             // lblProfileCharacterIdTitle
             // 
@@ -1954,6 +2407,7 @@
             // 
             // displayProfiles
             // 
+            this.displayProfiles.Cursor = System.Windows.Forms.Cursors.Hand;
             this.displayProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.displayProfiles.Font = new System.Drawing.Font("Bahnschrift SemiLight", 11F);
             this.displayProfiles.FormattingEnabled = true;
@@ -1966,6 +2420,8 @@
             // panelSettings
             // 
             this.panelSettings.BackColor = System.Drawing.SystemColors.Control;
+            this.panelSettings.Controls.Add(this.appChangelogBox);
+            this.panelSettings.Controls.Add(this.btnAppViewChangelog);
             this.panelSettings.Controls.Add(this.appSettingsPanel);
             this.panelSettings.Location = new System.Drawing.Point(4, 22);
             this.panelSettings.Name = "panelSettings";
@@ -1977,21 +2433,125 @@
             // 
             // appSettingsPanel
             // 
+            this.appSettingsPanel.Controls.Add(this.appServerSettings);
             this.appSettingsPanel.Controls.Add(this.btnAppServerBrowse);
             this.appSettingsPanel.Controls.Add(this.btnAppReset);
             this.appSettingsPanel.Controls.Add(this.lblAppServerPathBox);
             this.appSettingsPanel.Controls.Add(this.lblAppServerPathTitle);
             this.appSettingsPanel.Location = new System.Drawing.Point(11, 6);
             this.appSettingsPanel.Name = "appSettingsPanel";
-            this.appSettingsPanel.Size = new System.Drawing.Size(599, 115);
+            this.appSettingsPanel.Size = new System.Drawing.Size(599, 205);
             this.appSettingsPanel.TabIndex = 5;
             this.appSettingsPanel.TabStop = false;
             this.appSettingsPanel.Text = "App settings";
             // 
+            // appServerSettings
+            // 
+            this.appServerSettings.Controls.Add(this.btnAppRefreshUI);
+            this.appServerSettings.Controls.Add(this.lblAppProfileEditingTitle);
+            this.appServerSettings.Controls.Add(this.btnAppClearCache);
+            this.appServerSettings.Controls.Add(this.lblAppLauncherToggle);
+            this.appServerSettings.Controls.Add(this.lblAppProfileEditingToggle);
+            this.appServerSettings.Controls.Add(this.lblAppLauncherTitle);
+            this.appServerSettings.Location = new System.Drawing.Point(130, 110);
+            this.appServerSettings.Name = "appServerSettings";
+            this.appServerSettings.Size = new System.Drawing.Size(463, 89);
+            this.appServerSettings.TabIndex = 28;
+            this.appServerSettings.TabStop = false;
+            this.appServerSettings.Text = "Module panel";
+            this.appServerSettings.Enter += new System.EventHandler(this.appServerSettings_Enter);
+            // 
+            // btnAppRestart
+            // 
+            this.btnAppRestart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAppRestart.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAppRestart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnAppRestart.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.btnAppRestart.Location = new System.Drawing.Point(695, 590);
+            this.btnAppRestart.Name = "btnAppRestart";
+            this.btnAppRestart.Size = new System.Drawing.Size(150, 35);
+            this.btnAppRestart.TabIndex = 29;
+            this.btnAppRestart.Text = "Restart";
+            this.btnAppRestart.UseVisualStyleBackColor = true;
+            this.btnAppRestart.Click += new System.EventHandler(this.btnAppRestart_Click);
+            // 
+            // btnAppRefreshUI
+            // 
+            this.btnAppRefreshUI.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAppRefreshUI.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnAppRefreshUI.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.btnAppRefreshUI.Location = new System.Drawing.Point(327, 50);
+            this.btnAppRefreshUI.Name = "btnAppRefreshUI";
+            this.btnAppRefreshUI.Size = new System.Drawing.Size(127, 30);
+            this.btnAppRefreshUI.TabIndex = 28;
+            this.btnAppRefreshUI.Text = "Refresh UI";
+            this.btnAppRefreshUI.UseVisualStyleBackColor = true;
+            this.btnAppRefreshUI.Click += new System.EventHandler(this.btnAppRefreshUI_Click);
+            // 
+            // lblAppProfileEditingTitle
+            // 
+            this.lblAppProfileEditingTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppProfileEditingTitle.AutoSize = true;
+            this.lblAppProfileEditingTitle.Location = new System.Drawing.Point(12, 20);
+            this.lblAppProfileEditingTitle.Name = "lblAppProfileEditingTitle";
+            this.lblAppProfileEditingTitle.Size = new System.Drawing.Size(70, 13);
+            this.lblAppProfileEditingTitle.TabIndex = 23;
+            this.lblAppProfileEditingTitle.Text = "Profile editing";
+            // 
+            // btnAppClearCache
+            // 
+            this.btnAppClearCache.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAppClearCache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnAppClearCache.ForeColor = System.Drawing.Color.IndianRed;
+            this.btnAppClearCache.Location = new System.Drawing.Point(327, 15);
+            this.btnAppClearCache.Name = "btnAppClearCache";
+            this.btnAppClearCache.Size = new System.Drawing.Size(127, 30);
+            this.btnAppClearCache.TabIndex = 22;
+            this.btnAppClearCache.Text = "Clear cache";
+            this.btnAppClearCache.UseVisualStyleBackColor = true;
+            this.btnAppClearCache.Click += new System.EventHandler(this.btnAppClearCache_Click);
+            // 
+            // lblAppLauncherToggle
+            // 
+            this.lblAppLauncherToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblAppLauncherToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.lblAppLauncherToggle.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lblAppLauncherToggle.Location = new System.Drawing.Point(160, 39);
+            this.lblAppLauncherToggle.Name = "lblAppLauncherToggle";
+            this.lblAppLauncherToggle.Size = new System.Drawing.Size(127, 30);
+            this.lblAppLauncherToggle.TabIndex = 27;
+            this.lblAppLauncherToggle.Text = "Enabled";
+            this.lblAppLauncherToggle.UseVisualStyleBackColor = true;
+            this.lblAppLauncherToggle.Click += new System.EventHandler(this.lblAppLauncherToggle_Click);
+            // 
+            // lblAppProfileEditingToggle
+            // 
+            this.lblAppProfileEditingToggle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblAppProfileEditingToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.lblAppProfileEditingToggle.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lblAppProfileEditingToggle.Location = new System.Drawing.Point(15, 39);
+            this.lblAppProfileEditingToggle.Name = "lblAppProfileEditingToggle";
+            this.lblAppProfileEditingToggle.Size = new System.Drawing.Size(127, 30);
+            this.lblAppProfileEditingToggle.TabIndex = 25;
+            this.lblAppProfileEditingToggle.Text = "Enabled";
+            this.lblAppProfileEditingToggle.UseVisualStyleBackColor = true;
+            this.lblAppProfileEditingToggle.Click += new System.EventHandler(this.lblAppProfileEditingToggle_Click);
+            // 
+            // lblAppLauncherTitle
+            // 
+            this.lblAppLauncherTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppLauncherTitle.AutoSize = true;
+            this.lblAppLauncherTitle.Location = new System.Drawing.Point(157, 20);
+            this.lblAppLauncherTitle.Name = "lblAppLauncherTitle";
+            this.lblAppLauncherTitle.Size = new System.Drawing.Size(128, 13);
+            this.lblAppLauncherTitle.TabIndex = 26;
+            this.lblAppLauncherTitle.Text = "Dedicated SPT Launcher";
+            // 
             // btnAppServerBrowse
             // 
-            this.btnAppServerBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAppServerBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAppServerBrowse.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAppServerBrowse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.btnAppServerBrowse.ForeColor = System.Drawing.Color.DodgerBlue;
@@ -2005,8 +2565,7 @@
             // 
             // btnAppReset
             // 
-            this.btnAppReset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAppReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAppReset.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAppReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.btnAppReset.ForeColor = System.Drawing.Color.IndianRed;
@@ -2036,7 +2595,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAppServerPath.BackColor = System.Drawing.Color.Gainsboro;
             this.lblAppServerPath.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblAppServerPath.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblAppServerPath.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblAppServerPath.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAppServerPath.ForeColor = System.Drawing.Color.Black;
             this.lblAppServerPath.Location = new System.Drawing.Point(6, 5);
@@ -2062,6 +2621,8 @@
             this.panelLauncher.BackColor = System.Drawing.SystemColors.Control;
             this.panelLauncher.Controls.Add(this.btnLauncherEndProcess);
             this.panelLauncher.Controls.Add(this.launcherServerOutputBox);
+            this.panelLauncher.Controls.Add(this.panelRunOptions);
+            this.panelLauncher.Controls.Add(this.lblLauncherServerInfo);
             this.panelLauncher.Location = new System.Drawing.Point(4, 22);
             this.panelLauncher.Name = "panelLauncher";
             this.panelLauncher.Padding = new System.Windows.Forms.Padding(3);
@@ -2071,14 +2632,15 @@
             // 
             // btnLauncherEndProcess
             // 
-            this.btnLauncherEndProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLauncherEndProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLauncherEndProcess.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLauncherEndProcess.Enabled = false;
-            this.btnLauncherEndProcess.Location = new System.Drawing.Point(824, 481);
+            this.btnLauncherEndProcess.ForeColor = System.Drawing.Color.IndianRed;
+            this.btnLauncherEndProcess.Location = new System.Drawing.Point(815, 24);
             this.btnLauncherEndProcess.Name = "btnLauncherEndProcess";
             this.btnLauncherEndProcess.Size = new System.Drawing.Size(125, 30);
             this.btnLauncherEndProcess.TabIndex = 22;
-            this.btnLauncherEndProcess.Text = "End Process";
+            this.btnLauncherEndProcess.Text = "Kill Server";
             this.btnLauncherEndProcess.UseVisualStyleBackColor = true;
             this.btnLauncherEndProcess.Click += new System.EventHandler(this.btnLauncherEndProcess_Click);
             // 
@@ -2089,11 +2651,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.launcherServerOutputBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.launcherServerOutputBox.Controls.Add(this.launcherServerOutput);
-            this.launcherServerOutputBox.Location = new System.Drawing.Point(1, 1);
+            this.launcherServerOutputBox.Location = new System.Drawing.Point(1, 71);
             this.launcherServerOutputBox.Margin = new System.Windows.Forms.Padding(4);
             this.launcherServerOutputBox.Name = "launcherServerOutputBox";
-            this.launcherServerOutputBox.Size = new System.Drawing.Size(947, 473);
+            this.launcherServerOutputBox.Size = new System.Drawing.Size(947, 449);
             this.launcherServerOutputBox.TabIndex = 14;
+            this.launcherServerOutputBox.Visible = false;
             // 
             // launcherServerOutput
             // 
@@ -2102,16 +2665,65 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.launcherServerOutput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.launcherServerOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.launcherServerOutput.Cursor = System.Windows.Forms.Cursors.Default;
+            this.launcherServerOutput.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.launcherServerOutput.Font = new System.Drawing.Font("Consolas", 10F);
             this.launcherServerOutput.ForeColor = System.Drawing.Color.LightGray;
             this.launcherServerOutput.Location = new System.Drawing.Point(5, 5);
             this.launcherServerOutput.Name = "launcherServerOutput";
             this.launcherServerOutput.ReadOnly = true;
-            this.launcherServerOutput.Size = new System.Drawing.Size(937, 463);
+            this.launcherServerOutput.Size = new System.Drawing.Size(937, 439);
             this.launcherServerOutput.TabIndex = 11;
             this.launcherServerOutput.Text = "";
             this.launcherServerOutput.MouseDown += new System.Windows.Forms.MouseEventHandler(this.launcherServerOutput_MouseDown);
+            // 
+            // panelRunOptions
+            // 
+            this.panelRunOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRunOptions.Controls.Add(this.btnLauncherStartProcess);
+            this.panelRunOptions.Controls.Add(this.btnLauncherStartLauncher);
+            this.panelRunOptions.Location = new System.Drawing.Point(507, 8);
+            this.panelRunOptions.Name = "panelRunOptions";
+            this.panelRunOptions.Size = new System.Drawing.Size(274, 53);
+            this.panelRunOptions.TabIndex = 36;
+            this.panelRunOptions.TabStop = false;
+            this.panelRunOptions.Text = "Run options";
+            // 
+            // btnLauncherStartProcess
+            // 
+            this.btnLauncherStartProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLauncherStartProcess.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLauncherStartProcess.Location = new System.Drawing.Point(9, 16);
+            this.btnLauncherStartProcess.Name = "btnLauncherStartProcess";
+            this.btnLauncherStartProcess.Size = new System.Drawing.Size(125, 30);
+            this.btnLauncherStartProcess.TabIndex = 34;
+            this.btnLauncherStartProcess.Text = "Run SPT";
+            this.btnLauncherStartProcess.UseVisualStyleBackColor = true;
+            this.btnLauncherStartProcess.Click += new System.EventHandler(this.btnLauncherStartProcess_Click);
+            // 
+            // btnLauncherStartLauncher
+            // 
+            this.btnLauncherStartLauncher.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLauncherStartLauncher.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnLauncherStartLauncher.Enabled = false;
+            this.btnLauncherStartLauncher.Location = new System.Drawing.Point(140, 16);
+            this.btnLauncherStartLauncher.Name = "btnLauncherStartLauncher";
+            this.btnLauncherStartLauncher.Size = new System.Drawing.Size(125, 30);
+            this.btnLauncherStartLauncher.TabIndex = 35;
+            this.btnLauncherStartLauncher.Text = "Run Launcher";
+            this.btnLauncherStartLauncher.UseVisualStyleBackColor = true;
+            this.btnLauncherStartLauncher.Click += new System.EventHandler(this.btnLauncherStartLauncher_Click);
+            // 
+            // lblLauncherServerInfo
+            // 
+            this.lblLauncherServerInfo.AutoSize = true;
+            this.lblLauncherServerInfo.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblLauncherServerInfo.Location = new System.Drawing.Point(6, 15);
+            this.lblLauncherServerInfo.Name = "lblLauncherServerInfo";
+            this.lblLauncherServerInfo.Size = new System.Drawing.Size(212, 39);
+            this.lblLauncherServerInfo.TabIndex = 23;
+            this.lblLauncherServerInfo.Text = "Running server {Placeholder} on port {Port}\r\n\r\nServer has {ModCount} mods running" +
+    "";
+            this.lblLauncherServerInfo.Visible = false;
             // 
             // watermark
             // 
@@ -2131,7 +2743,7 @@
             // 
             this.counterTotalMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.counterTotalMods.AutoSize = true;
-            this.counterTotalMods.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.counterTotalMods.Cursor = System.Windows.Forms.Cursors.Default;
             this.counterTotalMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
             this.counterTotalMods.ForeColor = System.Drawing.Color.MediumSlateBlue;
             this.counterTotalMods.Location = new System.Drawing.Point(3, 5);
@@ -2160,7 +2772,7 @@
             this.counterClientMods.AutoSize = true;
             this.counterClientMods.Cursor = System.Windows.Forms.Cursors.Hand;
             this.counterClientMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
-            this.counterClientMods.ForeColor = System.Drawing.Color.IndianRed;
+            this.counterClientMods.ForeColor = System.Drawing.Color.MediumSeaGreen;
             this.counterClientMods.Location = new System.Drawing.Point(6, 5);
             this.counterClientMods.Name = "counterClientMods";
             this.counterClientMods.Size = new System.Drawing.Size(21, 24);
@@ -2174,7 +2786,7 @@
             this.counterDisabledMods.AutoSize = true;
             this.counterDisabledMods.Cursor = System.Windows.Forms.Cursors.Hand;
             this.counterDisabledMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
-            this.counterDisabledMods.ForeColor = System.Drawing.Color.MediumSeaGreen;
+            this.counterDisabledMods.ForeColor = System.Drawing.Color.IndianRed;
             this.counterDisabledMods.Location = new System.Drawing.Point(6, 5);
             this.counterDisabledMods.Name = "counterDisabledMods";
             this.counterDisabledMods.Size = new System.Drawing.Size(21, 24);
@@ -2187,7 +2799,7 @@
             this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label13.AutoSize = true;
             this.label13.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label13.Location = new System.Drawing.Point(32, 10);
+            this.label13.Location = new System.Drawing.Point(39, 10);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(64, 13);
             this.label13.TabIndex = 27;
@@ -2198,7 +2810,7 @@
             this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label14.AutoSize = true;
             this.label14.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label14.Location = new System.Drawing.Point(32, 10);
+            this.label14.Location = new System.Drawing.Point(40, 10);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(60, 13);
             this.label14.TabIndex = 28;
@@ -2209,17 +2821,17 @@
             this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label15.AutoSize = true;
             this.label15.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label15.Location = new System.Drawing.Point(32, 10);
+            this.label15.Location = new System.Drawing.Point(39, 10);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(74, 13);
+            this.label15.Size = new System.Drawing.Size(79, 13);
             this.label15.TabIndex = 29;
-            this.label15.Text = "disabled mods";
+            this.label15.Text = "unloaded mods";
             // 
             // label16
             // 
             this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label16.AutoSize = true;
-            this.label16.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label16.Cursor = System.Windows.Forms.Cursors.Default;
             this.label16.Location = new System.Drawing.Point(39, 10);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(55, 13);
@@ -2271,27 +2883,51 @@
             this.sortingTooltip.AutomaticDelay = 300;
             this.sortingTooltip.ShowAlways = true;
             // 
-            // profileNotice
+            // btnAppViewChangelog
             // 
-            this.profileNotice.Font = new System.Drawing.Font("Bahnschrift SemiLight SemiConde", 12F);
-            this.profileNotice.Location = new System.Drawing.Point(783, 87);
-            this.profileNotice.Name = "profileNotice";
-            this.profileNotice.Size = new System.Drawing.Size(143, 274);
-            this.profileNotice.TabIndex = 5;
-            this.profileNotice.Text = "PLEASE READ!\r\n\r\nThis section is unfinished!\r\n\r\nYour can read any of your profiles" +
-    ", but you won\'t be able to edit them.";
+            this.btnAppViewChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAppViewChangelog.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAppViewChangelog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnAppViewChangelog.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnAppViewChangelog.Location = new System.Drawing.Point(629, 41);
+            this.btnAppViewChangelog.Name = "btnAppViewChangelog";
+            this.btnAppViewChangelog.Size = new System.Drawing.Size(300, 35);
+            this.btnAppViewChangelog.TabIndex = 30;
+            this.btnAppViewChangelog.Text = "Open changelog";
+            this.btnAppViewChangelog.UseVisualStyleBackColor = true;
+            this.btnAppViewChangelog.Click += new System.EventHandler(this.btnAppViewChangelog_Click);
             // 
-            // btnServerConfigToggle
+            // appChangelogBox
             // 
-            this.btnServerConfigToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnServerConfigToggle.Enabled = false;
-            this.btnServerConfigToggle.Location = new System.Drawing.Point(6, 416);
-            this.btnServerConfigToggle.Name = "btnServerConfigToggle";
-            this.btnServerConfigToggle.Size = new System.Drawing.Size(178, 30);
-            this.btnServerConfigToggle.TabIndex = 31;
-            this.btnServerConfigToggle.Text = "Toggle true / false";
-            this.btnServerConfigToggle.UseVisualStyleBackColor = true;
-            this.btnServerConfigToggle.Click += new System.EventHandler(this.btnServerConfigToggle_Click);
+            this.appChangelogBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.appChangelogBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.appChangelogBox.Controls.Add(this.appChangelog);
+            this.appChangelogBox.Location = new System.Drawing.Point(11, 218);
+            this.appChangelogBox.Margin = new System.Windows.Forms.Padding(4);
+            this.appChangelogBox.Name = "appChangelogBox";
+            this.appChangelogBox.Size = new System.Drawing.Size(918, 288);
+            this.appChangelogBox.TabIndex = 31;
+            this.appChangelogBox.Visible = false;
+            // 
+            // appChangelog
+            // 
+            this.appChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.appChangelog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.appChangelog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.appChangelog.Font = new System.Drawing.Font("Consolas", 10F);
+            this.appChangelog.ForeColor = System.Drawing.Color.LightGray;
+            this.appChangelog.Location = new System.Drawing.Point(5, 5);
+            this.appChangelog.Name = "appChangelog";
+            this.appChangelog.ReadOnly = true;
+            this.appChangelog.Size = new System.Drawing.Size(908, 278);
+            this.appChangelog.TabIndex = 11;
+            this.appChangelog.Text = resources.GetString("appChangelog.Text");
+            this.appChangelog.KeyDown += new System.Windows.Forms.KeyEventHandler(this.appChangelog_KeyDown);
             // 
             // mainWindow
             // 
@@ -2299,6 +2935,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(977, 639);
+            this.Controls.Add(this.btnAppRestart);
             this.Controls.Add(this.panel16);
             this.Controls.Add(this.panel15);
             this.Controls.Add(this.panel14);
@@ -2385,10 +3022,14 @@
             this.panelSettings.ResumeLayout(false);
             this.appSettingsPanel.ResumeLayout(false);
             this.appSettingsPanel.PerformLayout();
+            this.appServerSettings.ResumeLayout(false);
+            this.appServerSettings.PerformLayout();
             this.lblAppServerPathBox.ResumeLayout(false);
             this.lblAppServerPathBox.PerformLayout();
             this.panelLauncher.ResumeLayout(false);
+            this.panelLauncher.PerformLayout();
             this.launcherServerOutputBox.ResumeLayout(false);
+            this.panelRunOptions.ResumeLayout(false);
             this.panel13.ResumeLayout(false);
             this.panel13.PerformLayout();
             this.panel14.ResumeLayout(false);
@@ -2397,6 +3038,7 @@
             this.panel15.PerformLayout();
             this.panel16.ResumeLayout(false);
             this.panel16.PerformLayout();
+            this.appChangelogBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2455,7 +3097,6 @@
         private System.Windows.Forms.Button serverVersionToggle;
         private System.Windows.Forms.Button serverNameToggle;
         private System.Windows.Forms.Button clientNameToggle;
-        private System.Windows.Forms.Button bRefresh;
         private System.Windows.Forms.Label serverPath;
         private System.Windows.Forms.GroupBox appSettingsPanel;
         private System.Windows.Forms.Button btnAppReset;
@@ -2530,7 +3171,6 @@
         private System.Windows.Forms.Panel panel14;
         private System.Windows.Forms.Panel panel15;
         private System.Windows.Forms.Panel panel16;
-        private System.Windows.Forms.Button btnServerConfigSave;
         private System.Windows.Forms.GroupBox clientOptionsPanel;
         private System.Windows.Forms.Button btnClientConfigSave;
         public System.Windows.Forms.Label clientConfigPlaceholder;
@@ -2553,14 +3193,61 @@
         public System.Windows.Forms.Panel lblProfileGameUsernameBox;
         public System.Windows.Forms.TextBox lblProfileGameUsername;
         public System.Windows.Forms.Label lblProfileGameUsernameTitle;
-        private System.Windows.Forms.Button bRestartApp;
-        private System.Windows.Forms.ComboBox managerMenu;
         private System.Windows.Forms.TabPage panelLauncher;
         public System.Windows.Forms.Panel launcherServerOutputBox;
         private System.Windows.Forms.RichTextBox launcherServerOutput;
         private System.Windows.Forms.Button btnLauncherEndProcess;
         private System.Windows.Forms.Label profileNotice;
         private System.Windows.Forms.Button btnServerConfigToggle;
+        private System.Windows.Forms.Button bTheme;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btnServerConfigLineDown;
+        private System.Windows.Forms.Button btnServerConfigLineUp;
+        private System.Windows.Forms.TextBox btnServerConfigEditNumber;
+        public System.Windows.Forms.Label label3;
+        public System.Windows.Forms.Label label2;
+        public System.Windows.Forms.Label label4;
+        public System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnServerConfigRestore;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Label lblLauncherServerInfo;
+        private System.Windows.Forms.Button btnLauncherStartProcess;
+        private System.Windows.Forms.GroupBox panelRunOptions;
+        private System.Windows.Forms.Button btnLauncherStartLauncher;
+        private System.Windows.Forms.Button btnAppClearCache;
+        public System.Windows.Forms.Label lblAppProfileEditingTitle;
+        private System.Windows.Forms.Button lblAppProfileEditingToggle;
+        private System.Windows.Forms.Button lblAppLauncherToggle;
+        public System.Windows.Forms.Label lblAppLauncherTitle;
+        private System.Windows.Forms.GroupBox appServerSettings;
+        public System.Windows.Forms.TextBox healthLeftArmMax;
+        public System.Windows.Forms.Panel panel9;
+        public System.Windows.Forms.Panel panel10;
+        public System.Windows.Forms.TextBox healthRightArmMax;
+        public System.Windows.Forms.Panel panel11;
+        public System.Windows.Forms.TextBox healthHeadMax;
+        public System.Windows.Forms.Panel panel12;
+        public System.Windows.Forms.TextBox healthChestMax;
+        public System.Windows.Forms.Panel panel17;
+        public System.Windows.Forms.TextBox healthStomachMax;
+        public System.Windows.Forms.Panel panel18;
+        public System.Windows.Forms.TextBox healthLeftLegMax;
+        public System.Windows.Forms.Panel panel19;
+        public System.Windows.Forms.TextBox healthRightLegMax;
+        public System.Windows.Forms.Panel panel20;
+        public System.Windows.Forms.TextBox healthTotalMax;
+        public System.Windows.Forms.Panel panel21;
+        private System.Windows.Forms.Button btnAppRefreshUI;
+        private System.Windows.Forms.Button btnAppRestart;
+        private System.Windows.Forms.Button btnAppViewChangelog;
+        public System.Windows.Forms.Panel appChangelogBox;
+        private System.Windows.Forms.RichTextBox appChangelog;
     }
 }
 

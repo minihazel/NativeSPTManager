@@ -26,6 +26,12 @@ using Microsoft.VisualBasic.Devices;
 using Microsoft.VisualBasic;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using System.Data.Common;
+using System.Net.Sockets;
+using System.Net;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
+using System.Xml.Serialization;
+using System.Threading;
+using SharpCompress.Archives.Rar;
 
 namespace NativeSPTManager
 {
@@ -36,10 +42,22 @@ namespace NativeSPTManager
         public string documentsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SPT Manager");
         public string documentsDisabledServerFolder;
         public string documentsDisabledClientFolder;
+        private System.Windows.Forms.Timer startTimer;
+        private int tickCount = 0;
+        Process processToKill;
+        Process launcherProcess;
+
         public bool serverBool = false;
         public bool isClientMod = false;
         public bool newModLoader = false;
+        public bool darkTheme = false;
+
+        public Color darkThemeBG = Color.FromArgb(255, 55, 55, 55);
+        public Color darkThemeTextbox = Color.FromArgb(255, 75, 75, 75);
+        public Color lightThemeBG = SystemColors.Control;
+
         public int clientModCount = 0;
+        public List<string> fullPaths = new List<string>();
 
         public mainWindow()
         {
@@ -68,7 +86,7 @@ namespace NativeSPTManager
         {
             if (Properties.Settings.Default.server_path == null || Properties.Settings.Default.server_path == "" || !Directory.Exists(Properties.Settings.Default.server_path))
             {
-                if (MessageBox.Show($"It looks like {this.Text} has no server to connect to. Would you like to fix this?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show($"It looks like {this.Text} has no server to connect to. Click Yes to browse for one, or No to exit.", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     CommonOpenFileDialog dialog = new CommonOpenFileDialog();
                     dialog.InitialDirectory = serverPath.Text;
@@ -85,6 +103,9 @@ namespace NativeSPTManager
                         Application.Restart();
 
                     }
+                } else
+                {
+                    Application.Exit();
                 }
             } else
             {
@@ -97,6 +118,952 @@ namespace NativeSPTManager
                 clientConfigTitle.Text = "";
 
                 refreshUI();
+
+                if (Properties.Settings.Default.profileEditing == true)
+                {
+                    lblAppProfileEditingToggle.Text = "Enabled";
+                    lblAppProfileEditingToggle.ForeColor = Color.DodgerBlue;
+                } else
+                {
+                    lblAppProfileEditingToggle.Text = "Disabled";
+                    lblAppProfileEditingToggle.ForeColor = Color.IndianRed;
+                }
+
+                if (Properties.Settings.Default.dedicatedLauncher == true)
+                {
+                    lblAppLauncherToggle.Text = "Enabled";
+                    lblAppLauncherToggle.ForeColor = Color.DodgerBlue;
+
+                    btnLauncherStartProcess.Enabled = true;
+                    // btnLauncherStartLauncher.Enabled = true;
+                }
+                else
+                {
+                    lblAppLauncherToggle.Text = "Disabled";
+                    lblAppLauncherToggle.ForeColor = Color.IndianRed;
+
+                    btnLauncherStartProcess.Enabled = false;
+                    // btnLauncherStartLauncher.Enabled = false;
+                }
+            }
+        }
+
+        private void ToggleTheme(bool isDark)
+        {
+            if (isDark)
+            {
+                this.BackColor = darkThemeBG;
+                this.ForeColor = Color.Gainsboro;
+                topPanel.BackColor = darkThemeBG;
+                topPanel.ForeColor = Color.Gainsboro;
+
+
+                // Server mods
+                panelServerMods.BackColor = darkThemeBG;
+                panelServerMods.ForeColor = Color.Gainsboro;
+
+                serverModsPanel.BackColor = darkThemeBG;
+                serverModsPanel.ForeColor = Color.Gainsboro;
+
+                serverOptionsPanel.BackColor = darkThemeBG;
+                serverOptionsPanel.ForeColor = Color.Gainsboro;
+
+                foreach (Control component in serverModsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = darkThemeTextbox;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeTextbox;
+                        btn.ForeColor = Color.Silver;
+
+                        // btnServerSortUp.BackgroundImage = System.Drawing.Image.FromFile(Path.Combine(Environment.CurrentDirectory, "src\\Arrow-Up-DarkMode.png"));
+                        // btnServerSortDown.BackgroundImage = System.Drawing.Image.FromFile(Path.Combine(Environment.CurrentDirectory, "src\\Arrow-Down-DarkMode.png"));
+
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = darkThemeTextbox;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+                foreach (Control component in serverOptionsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 0;
+                        btn.FlatStyle = FlatStyle.Flat;
+
+                        btn.BackColor = darkThemeTextbox;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        if (component.Name.ToLower() != "serverconfigbox")
+                        {
+                            component.BackColor = darkThemeTextbox;
+                        }
+                        else
+                        {
+                            component.BackColor = Color.FromArgb(255, 45, 45, 45);
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+
+                // Client mods
+                panelClientMods.BackColor = darkThemeBG;
+                panelClientMods.ForeColor = Color.Gainsboro;
+
+                clientModsPanel.BackColor = darkThemeBG;
+                clientModsPanel.ForeColor = Color.Gainsboro;
+
+                clientOptionsPanel.BackColor = darkThemeBG;
+                clientOptionsPanel.ForeColor = Color.Gainsboro;
+
+                foreach (Control component in clientModsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = darkThemeTextbox;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeTextbox;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = darkThemeTextbox;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+                foreach (Control component in clientOptionsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 0;
+                        btn.FlatStyle = FlatStyle.Flat;
+
+                        btn.BackColor = darkThemeTextbox;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        if (component.Name.ToLower() != "clientconfigbox")
+                        {
+                            component.BackColor = darkThemeTextbox;
+                        }
+                        else
+                        {
+                            component.BackColor = Color.FromArgb(255, 45, 45, 45);
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+                // Disabled mods
+                panelDisabledMods.BackColor = darkThemeBG;
+                panelDisabledMods.ForeColor = Color.Gainsboro;
+
+                disabledModsPanel.BackColor = darkThemeBG;
+                disabledModsPanel.ForeColor = Color.Gainsboro;
+
+                foreach (Control component in disabledModsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = darkThemeTextbox;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeTextbox;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = darkThemeTextbox;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+
+                // Profile editor
+                panelProfile.BackColor = darkThemeBG;
+                panelProfile.ForeColor = Color.Gainsboro;
+
+                profileOptionsPanel.BackColor = darkThemeBG;
+                profileOptionsPanel.ForeColor = Color.Gainsboro;
+
+                profileHealthPanel.BackColor = darkThemeBG;
+                profileHealthPanel.ForeColor = Color.Gainsboro;
+
+                profileNotice.ForeColor = Color.Gainsboro;
+
+                foreach (Control component in profileOptionsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = darkThemeTextbox;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeTextbox;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = darkThemeTextbox;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+                foreach (Control component in profileHealthPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = darkThemeTextbox;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeTextbox;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+
+                // Settings
+                panelSettings.BackColor = darkThemeBG;
+                panelSettings.ForeColor = Color.Gainsboro;
+
+                appSettingsPanel.BackColor = darkThemeBG;
+                appSettingsPanel.ForeColor = Color.Gainsboro;
+
+                appServerSettings.BackColor = darkThemeBG;
+                appServerSettings.ForeColor = Color.Gainsboro;
+
+                foreach (Control component in appSettingsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = darkThemeTextbox;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeTextbox;
+
+                        if (btn.Text.ToLower() == "reset")
+                        {
+                            btn.ForeColor = Color.IndianRed;
+                        }
+
+                        if (btn.Text.ToLower() == "browse")
+                        {
+                            btn.ForeColor = Color.DodgerBlue;
+                        }
+
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = darkThemeTextbox;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+                foreach (Control component in appServerSettings.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = darkThemeTextbox;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeTextbox;
+
+                        if (btn.Text.ToLower() == "btnappclearcache")
+                        {
+                            btn.ForeColor = Color.IndianRed;
+                        }
+
+                        if (btn.Text.ToLower() == "lblapplaunchertoggle")
+                        {
+                            btn.ForeColor = Color.DodgerBlue;
+                        }
+
+                        if (btn.Name.ToLower() == "lblappprofileeditingtoggle")
+                        {
+                            btn.ForeColor = Color.DodgerBlue;
+                        }
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = darkThemeTextbox;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+
+                // Launcher
+                panelLauncher.BackColor = darkThemeBG;
+                panelLauncher.ForeColor = Color.Silver;
+
+                panelRunOptions.BackColor = darkThemeBG;
+                panelRunOptions.ForeColor = Color.Silver;
+
+                foreach (Control component in panelLauncher.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeBG;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = darkThemeBG;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeBG;
+                            box.ForeColor = Color.Silver;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = darkThemeBG;
+                        component.ForeColor = Color.Silver;
+                    }
+                }
+
+                foreach (Control component in panelRunOptions.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = darkThemeBG;
+                        btn.ForeColor = Color.Silver;
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = darkThemeBG;
+                        component.ForeColor = Color.Silver;
+                    }
+                }
+
+            }
+            else
+            {
+                this.BackColor = lightThemeBG;
+                this.ForeColor = SystemColors.ControlText;
+                topPanel.BackColor = lightThemeBG;
+                topPanel.ForeColor = SystemColors.ControlText;
+
+                // Server mods
+                panelServerMods.BackColor = lightThemeBG;
+                panelServerMods.ForeColor = SystemColors.ControlText;
+
+                serverModsPanel.BackColor = lightThemeBG;
+                serverModsPanel.ForeColor = SystemColors.ControlText;
+
+                serverOptionsPanel.BackColor = lightThemeBG;
+                serverOptionsPanel.ForeColor = SystemColors.ControlText;
+
+                serverModsPanel.BackColor = lightThemeBG;
+                serverModsPanel.ForeColor = SystemColors.ControlText;
+
+                foreach (Control component in serverModsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 1;
+                        btn.FlatStyle = FlatStyle.Standard;
+
+                        btn.BackColor = Color.Gainsboro;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = Color.Gainsboro;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = Color.Gainsboro;
+                            box.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+                }
+
+                foreach (Control component in serverOptionsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 1;
+                        btn.FlatStyle = FlatStyle.Standard;
+
+                        btn.BackColor = Color.Gainsboro;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        if (component.Name.ToLower() != "serverconfigbox")
+                        {
+                            component.BackColor = darkThemeTextbox;
+                        } else
+                        {
+                            component.BackColor = Color.FromArgb(255, 45, 45, 45);
+                        }
+
+                        /*
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                        */
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+
+                // Client mods
+                panelClientMods.BackColor = lightThemeBG;
+                panelClientMods.ForeColor = SystemColors.ControlText;
+
+                clientModsPanel.BackColor = lightThemeBG;
+                clientModsPanel.ForeColor = SystemColors.ControlText;
+
+                clientOptionsPanel.BackColor = lightThemeBG;
+                clientOptionsPanel.ForeColor = SystemColors.ControlText;
+
+                foreach (Control component in clientModsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 1;
+                        btn.FlatStyle = FlatStyle.Standard;
+
+                        btn.BackColor = Color.Gainsboro;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = Color.Gainsboro;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = Color.Gainsboro;
+                            box.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+                }
+
+                foreach (Control component in clientOptionsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 1;
+                        btn.FlatStyle = FlatStyle.Standard;
+
+                        btn.BackColor = Color.Gainsboro;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        if (component.Name.ToLower() != "clientconfigbox")
+                        {
+                            component.BackColor = darkThemeTextbox;
+                        }
+                        else
+                        {
+                            component.BackColor = Color.FromArgb(255, 45, 45, 45);
+                        }
+
+                        /*
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = darkThemeTextbox;
+                            box.ForeColor = Color.Silver;
+                        }
+                        */
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.ForeColor = Color.Silver;
+                        component.BackColor = darkThemeBG;
+                    }
+                }
+
+
+                // Disabled mods
+                panelDisabledMods.BackColor = lightThemeBG;
+                panelDisabledMods.ForeColor = SystemColors.ControlText;
+
+                disabledModsPanel.BackColor = lightThemeBG;
+                disabledModsPanel.ForeColor = SystemColors.ControlText;
+
+                foreach (Control component in disabledModsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 1;
+                        btn.FlatStyle = FlatStyle.Standard;
+
+                        btn.BackColor = Color.Gainsboro;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = Color.Gainsboro;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = Color.Gainsboro;
+                            box.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+                }
+
+
+                // Profile editor
+                panelProfile.BackColor = lightThemeBG;
+                panelProfile.ForeColor = SystemColors.ControlText;
+
+                profileOptionsPanel.BackColor = lightThemeBG;
+                profileOptionsPanel.ForeColor = SystemColors.ControlText;
+
+                profileHealthPanel.BackColor = lightThemeBG;
+                profileHealthPanel.ForeColor = SystemColors.ControlText;
+
+                profileNotice.ForeColor = Color.IndianRed;
+
+                foreach (Control component in profileOptionsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = lightThemeBG;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = lightThemeBG;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = lightThemeBG;
+                            box.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = lightThemeBG;
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+                }
+
+                foreach (Control component in profileHealthPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = lightThemeBG;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = lightThemeBG;
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+                }
+
+
+                // Settings
+                panelSettings.BackColor = lightThemeBG;
+                panelSettings.ForeColor = SystemColors.ControlText;
+
+                appSettingsPanel.BackColor = lightThemeBG;
+                appSettingsPanel.ForeColor = SystemColors.ControlText;
+
+                appServerSettings.BackColor = lightThemeBG;
+                appServerSettings.ForeColor = SystemColors.ControlText;
+
+                foreach (Control component in appSettingsPanel.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = lightThemeBG;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = lightThemeBG;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = lightThemeBG;
+                            box.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = lightThemeBG;
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+                }
+
+                foreach (Control component in appServerSettings.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = lightThemeBG;
+                        
+                        if (btn.Text.ToLower() == "btnappclearcache")
+                        {
+                            btn.ForeColor = Color.IndianRed;
+                        }
+
+                        if (btn.Text.ToLower() == "lblapplaunchertoggle")
+                        {
+                            btn.ForeColor = Color.DodgerBlue;
+                        }
+
+                        if (btn.Name.ToLower() == "lblappprofileeditingtoggle")
+                        {
+                            btn.ForeColor = Color.DodgerBlue;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = lightThemeBG;
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+                }
+
+
+                // Launcher
+                panelLauncher.BackColor = lightThemeBG;
+                panelLauncher.ForeColor = SystemColors.ControlText;
+
+                panelRunOptions.BackColor = lightThemeBG;
+                panelRunOptions.ForeColor = SystemColors.ControlText;
+
+                foreach (Control component in panelLauncher.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = lightThemeBG;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Panel && component.HasChildren)
+                    {
+                        component.BackColor = lightThemeBG;
+                        foreach (TextBox box in component.Controls)
+                        {
+                            box.BackColor = lightThemeBG;
+                            box.ForeColor = SystemColors.ControlText;
+                        }
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = lightThemeBG;
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+                }
+
+                foreach (Control component in panelRunOptions.Controls)
+                {
+                    if (component is Label)
+                    {
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is Button)
+                    {
+                        Button btn = (Button)component;
+                        btn.FlatAppearance.BorderSize = 4;
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = lightThemeBG;
+                        btn.BackgroundImageLayout = ImageLayout.Zoom;
+
+                        btn.BackColor = lightThemeBG;
+                        btn.ForeColor = SystemColors.ControlText;
+                    }
+
+                    if (component is ComboBox)
+                    {
+                        component.BackColor = lightThemeBG;
+                        component.ForeColor = SystemColors.ControlText;
+                    }
+                }
             }
         }
 
@@ -153,7 +1120,6 @@ namespace NativeSPTManager
                 Debug.WriteLine($"ERROR: {err}");
                 MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
             }
-
         }
 
         public void ListObjects(dynamic obj, ComboBox box)
@@ -183,6 +1149,7 @@ namespace NativeSPTManager
 
         private void loadServerMods()
         {
+            serverDisplayMods.Items.Clear();
             if (this.Text.Contains("0.12") && newModLoader == false)
             {
                 try
@@ -226,6 +1193,7 @@ namespace NativeSPTManager
 
         private void loadClientMods()
         {
+            clientDisplayMods.Items.Clear();
             try
             {
                 string[] clientFolders = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
@@ -255,6 +1223,7 @@ namespace NativeSPTManager
 
         private void loadDisabledMods()
         {
+            disabledDisplayMods.Items.Clear();
             try
             {
                 string[] clientfolders = Directory.GetDirectories($"{documentsDisabledClientFolder}");
@@ -439,7 +1408,6 @@ namespace NativeSPTManager
             serverAkiToggle.Enabled = true;
             serverNameToggle.Enabled = true;
 
-            btnServerConfigSave.Enabled = false;
             btnServerConfigValidate.Enabled = false;
             btnServerConfigOpen.Enabled = false;
             serverDisplayConfigs.Enabled = true;
@@ -493,10 +1461,11 @@ namespace NativeSPTManager
             btnServerModDelete.Enabled = false;
             btnServerModDisable.Enabled = false;
 
-            btnServerConfigSave.Enabled = false;
             btnServerConfigValidate.Enabled = false;
             btnServerConfigOpen.Enabled = false;
             btnServerConfigToggle.Enabled = false;
+            btnServerConfigOpen.Enabled = false;
+            btnServerConfigRestore.Enabled = false;
 
             serverDisplayConfigs.Enabled = false;
             serverConfig.ReadOnly = true;
@@ -522,6 +1491,7 @@ namespace NativeSPTManager
             serverConfig.Text = "";
             serverDisplayConfigs.Items.Clear();
             serverDisplayConfigs.Enabled = false;
+
 
             loadServerMods();
         }
@@ -569,7 +1539,12 @@ namespace NativeSPTManager
         {
             try
             {
+                fullPaths.Clear();
+
                 serverDisplayConfigs.Items.Clear();
+                serverConfigTitle.Text = "";
+                serverConfig.Text = "";
+                btnServerConfigToggle.Enabled = false;
 
                 string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
                 for (int i = 0; i < servermods.Length; i++)
@@ -589,27 +1564,10 @@ namespace NativeSPTManager
 
                         serverDisplayConfigs.Items.Clear();
 
-                        string[] subfolders = Directory.GetDirectories(servermods[i]);
-                        foreach (string folder in subfolders)
-                        {
-                            if (Path.GetFileName(folder) == "config" || Path.GetFileName(folder) == "cfg")
-                            {
-                                string[] configfiles = Directory.GetFiles(folder);
-                                foreach (string cfg in configfiles)
-                                {
-                                    serverDisplayConfigs.Items.Add(Path.GetFileName(cfg));
-                                    serverDisplayConfigs.Tag = $"config";
+                        readConfigFromServerMod(servermods[i]);
 
-                                    serverConfigTitle.Text = "";
-                                    serverConfig.Text = "";
-                                    btnServerConfigToggle.Enabled = false;
-
-                                    sortingTooltip.SetToolTip(btnServerSortUp, $"Move the load order up one slot on {serverDisplayMods.SelectedItem.ToString()}");
-                                    sortingTooltip.SetToolTip(btnServerSortDown, $"Move the load order down one slot on {serverDisplayMods.SelectedItem.ToString()}");
-                                }
-
-                            }
-                        }
+                        sortingTooltip.SetToolTip(btnServerSortUp, $"Move the load order up one slot on {serverDisplayMods.SelectedItem.ToString()}");
+                        sortingTooltip.SetToolTip(btnServerSortDown, $"Move the load order down one slot on {serverDisplayMods.SelectedItem.ToString()}");
                     }
                 }
 
@@ -618,6 +1576,47 @@ namespace NativeSPTManager
             {
                 Debug.WriteLine($"ERROR: {err}");
                 MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+        }
+
+        private void readConfigFromServerMod(string path)
+        {
+            try
+            {
+                foreach (string file in Directory.GetFiles(path))
+                {
+                    string[] subdirs = Directory.GetDirectories(path);
+
+                    if (Path.GetFileName(file).ToLower().Contains("cfg") && Path.GetExtension(file) == ".json")
+                    {
+                        string trimmedPath = file.Replace(path, "").TrimStart('\\');
+
+                        serverDisplayConfigs.Items.Add(trimmedPath);
+                        serverDisplayConfigs.Tag = $"cfg";
+
+                        fullPaths.Add(file);
+
+                    }
+                    else if (Path.GetFileName(file).ToLower().Contains("config") && Path.GetExtension(file) == ".json")
+                    {
+                        string trimmedPath = file.Replace(path, "").TrimStart('\\');
+
+                        serverDisplayConfigs.Items.Add(trimmedPath);
+                        serverDisplayConfigs.Tag = $"config";
+
+                        fullPaths.Add(file);
+
+                    }
+                }
+
+                foreach (string subDirectory in Directory.GetDirectories(path))
+                {
+                    readConfigFromServerMod(subDirectory);
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.WriteLine("Access to the path '{0}' is denied.", path);
             }
         }
 
@@ -637,7 +1636,7 @@ namespace NativeSPTManager
                             enableClientButtons();
 
                             btnClientModDisable.Enabled = true;
-                            btnServerModDelete.Enabled = true;
+                            btnClientModDelete.Enabled = true;
                             lblClientModType.Text = "File based";
                             lblClientModName.Text = Path.GetFileNameWithoutExtension(clientmods[i]);
 
@@ -664,7 +1663,6 @@ namespace NativeSPTManager
 
                                         btnClientConfigSave.Enabled = false;
                                         btnClientConfigOpen.Enabled = false;
-                                        btnClientModDelete.Enabled = true;
 
                                         clientConfigPlaceholder.Visible = false;
                                         clientConfigTitle.Visible = false;
@@ -699,6 +1697,7 @@ namespace NativeSPTManager
                         if (Path.GetFileName(clientmods[i]) == clientDisplayMods.SelectedItem.ToString())
                         {
                             btnClientModDisable.Enabled = true;
+                            btnClientModDelete.Enabled = true;
                             lblClientModType.Text = "Folder based";
                             lblClientModName.Text = Path.GetFileName(clientmods[i]);
 
@@ -783,6 +1782,7 @@ namespace NativeSPTManager
                     // Mod is a folder
                     if (File.Exists($"{documentsDisabledServerFolder}\\{disabledDisplayMods.Text}\\package.json"))
                     {
+                        // Server folder
                         try
                         {
                             string[] servermods = Directory.GetDirectories(documentsDisabledServerFolder);
@@ -902,18 +1902,29 @@ namespace NativeSPTManager
                         break;
                 }
 
-                healthHead.Text = $"{headCur} / {headMax} hp";
+                healthHead.Text = headCur;
+                healthHeadMax.Text = headMax;
 
-                healthLeftArm.Text = $"{leftArmCur} / {leftArmMax} hp";
-                healthRightArm.Text = $"{RightArmCur} / {RightArmMax} hp";
+                healthLeftArm.Text = leftArmCur;
+                healthLeftArmMax.Text = leftArmMax;
 
-                healthChest.Text = $"{ChestCur} / {ChestMax} hp";
-                healthStomach.Text = $"{StomachCur} / {StomachMax} hp";
+                healthRightArm.Text = RightArmCur;
+                healthRightArmMax.Text = RightArmMax;
 
-                healthLeftLeg.Text = $"{LeftLegCur} / {LeftLegMax} hp";
-                healthRightLeg.Text = $"{RightLegCur} / {RightLegMax} hp";
+                healthChest.Text = ChestCur;
+                healthChestMax.Text = ChestMax;
 
-                healthTotal.Text = $"{totalHealth.ToString()} hp";
+                healthStomach.Text = StomachCur;
+                healthStomachMax.Text = StomachMax;
+
+                healthLeftLeg.Text = LeftLegCur;
+                healthLeftLegMax.Text = LeftLegMax;
+
+                healthRightLeg.Text = RightLegCur;
+                healthRightLegMax.Text = RightLegMax;
+
+                healthTotal.Text = totalHealth.ToString();
+                healthTotalMax.Text = totalHealth.ToString();
 
                 btnProfileDelete.Enabled = true;
 
@@ -1014,12 +2025,15 @@ namespace NativeSPTManager
             timer.Start();
         }
 
-        private void displayMoveSuccess(bool direction, string modName)
+        private void displayMoveSuccess(bool direction, string modName, int originalIndex, int newIndex)
         {
+            int origin = originalIndex + 1;
+            int newind = newIndex + 1;
+
             if (!direction)
             {
                 serverDisplayLabel.Visible = true;
-                serverDisplayLabel.Text = $"Moved {modName} down one slot in order!";
+                serverDisplayLabel.Text = $"Moved {modName} down from index {origin} to {newind}!";
 
                 System.Timers.Timer timer = new System.Timers.Timer();
                 timer.Interval = 2000; // 2 seconds
@@ -1037,7 +2051,7 @@ namespace NativeSPTManager
             } else
             {
                 serverDisplayLabel.Visible = true;
-                serverDisplayLabel.Text = $"Moved {modName} up one slot in order!";
+                serverDisplayLabel.Text = $"Moved {modName} up from index {origin} to {newind}!";
 
                 System.Timers.Timer timer = new System.Timers.Timer();
                 timer.Interval = 2000; // 2 seconds
@@ -1120,6 +2134,108 @@ namespace NativeSPTManager
             Directory.Delete(sourceDir, true);
         }
 
+        private void StartTimer()
+        {
+            startTimer = new System.Windows.Forms.Timer();
+            startTimer.Interval = 1000;
+            startTimer.Tick += STimer_Tick;
+            startTimer.Start();
+
+            lblLauncherServerInfo.Visible = true;
+            lblLauncherServerInfo.Text = "Server is starting!\nPlease wait until the server has connected, the tool may lag significantly.";
+        }
+
+        private void STimer_Tick(object sender, EventArgs e)
+        {
+            tickCount++;
+
+            if (IsPortOpen(6969))
+            {
+                startTimer.Stop();
+
+                string[] serverMods = { };
+                string[] clientMods = { };
+
+                foreach (string item in serverDisplayMods.Items)
+                {
+                    Array.Resize(ref serverMods, serverMods.Length + 1);
+                    serverMods[serverMods.Length - 1] = "- " + item.ToString();
+                }
+
+                foreach (string item in clientDisplayMods.Items)
+                {
+                    Array.Resize(ref clientMods, clientMods.Length + 1);
+                    clientMods[clientMods.Length - 1] = "- " + item.ToString();
+                }
+
+                string serverResult = string.Join("\n", serverMods);
+                string clientResult = string.Join("\n", clientMods);
+
+                launcherServerOutput.Clear();
+                launcherServerOutput.Text += $"Server {Path.GetFileName(Properties.Settings.Default.server_path)} started! Port running: 6969\n";
+                launcherServerOutput.Text += $"{serverDisplayMods.Items.Count + clientDisplayMods.Items.Count} mods running!\n\n";
+                launcherServerOutput.Text += $"Active server mods:\n{serverResult}\n\n";
+                launcherServerOutput.Text += $"Active client mods:\n{clientResult}\n\n";
+                launcherServerOutput.Text += $"You can now run the AKI launcher!";
+
+                lblLauncherServerInfo.Visible = true;
+                lblLauncherServerInfo.Text =
+                    $"Server {Path.GetFileName(Properties.Settings.Default.server_path)} running on port 6969\n" +
+                    $"Running mods: {serverDisplayMods.Items.Count} server mods and {clientDisplayMods.Items.Count} client mods";
+
+                btnLauncherEndProcess.Enabled = true;
+
+                // StartLauncher();
+
+
+            }
+            else if (tickCount == 60)
+            {
+                MessageBox.Show("Server failed to run after 1 minute.", this.Text, MessageBoxButtons.OK);
+            }
+        }
+
+        private bool IsPortOpen(int port)
+        {
+            try
+            {
+                using (TcpClient tcpClient = new TcpClient())
+                {
+                    tcpClient.Connect("localhost", port);
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private void StartLauncher()
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(Properties.Settings.Default.server_path);
+            Process launcher = new Process();
+
+            launcher.StartInfo.WorkingDirectory = Properties.Settings.Default.server_path;
+            launcher.StartInfo.FileName = "Aki.Launcher.exe";
+            launcher.StartInfo.CreateNoWindow = true;
+            launcher.StartInfo.UseShellExecute = false;
+            launcher.StartInfo.RedirectStandardOutput = true;
+
+            try
+            {
+                launcher.Start();
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+
+            Directory.SetCurrentDirectory(currentDir);
+        }
+
         private void serverDisplayMods_SelectedIndexChanged(object sender, EventArgs e)
         {
             readServerMod();
@@ -1143,8 +2259,16 @@ namespace NativeSPTManager
                 lblServerModAuthor.ForeColor = Color.DodgerBlue;
             } else
             {
-                lblServerModAuthor.ReadOnly = true;
-                lblServerModAuthor.ForeColor = Color.Black;
+                if (darkTheme)
+                {
+                    lblServerModAuthor.ReadOnly = true;
+                    lblServerModAuthor.ForeColor = Color.Silver;
+                }
+                else
+                {
+                    lblServerModAuthor.ReadOnly = true;
+                    lblServerModAuthor.ForeColor = Color.Black;
+                }
             }
         }
 
@@ -1157,8 +2281,16 @@ namespace NativeSPTManager
             }
             else
             {
-                lblServerModVersion.ReadOnly = true;
-                lblServerModVersion.ForeColor = Color.Black;
+                if (darkTheme)
+                {
+                    lblServerModVersion.ReadOnly = true;
+                    lblServerModVersion.ForeColor = Color.Silver;
+                }
+                else
+                {
+                    lblServerModVersion.ReadOnly = true;
+                    lblServerModVersion.ForeColor = Color.Black;
+                }
             }
         }
 
@@ -1171,8 +2303,15 @@ namespace NativeSPTManager
             }
             else
             {
-                lblServerModSrc.ReadOnly = true;
-                lblServerModSrc.ForeColor = Color.Black;
+                if (darkTheme)
+                {
+                    lblServerModSrc.ReadOnly = true;
+                    lblServerModSrc.ForeColor = Color.Silver;
+                } else
+                {
+                    lblServerModSrc.ReadOnly = true;
+                    lblServerModSrc.ForeColor = Color.Black;
+                }
             }
         }
 
@@ -1185,8 +2324,15 @@ namespace NativeSPTManager
             }
             else
             {
-                lblServerModAkiVersion.ReadOnly = true;
-                lblServerModAkiVersion.ForeColor = Color.Black;
+                if (darkTheme)
+                {
+                    lblServerModAkiVersion.ReadOnly = true;
+                    lblServerModAkiVersion.ForeColor = Color.Silver;
+                } else
+                {
+                    lblServerModAkiVersion.ReadOnly = true;
+                    lblServerModAkiVersion.ForeColor = Color.Black;
+                }
             }
         }
 
@@ -1199,8 +2345,16 @@ namespace NativeSPTManager
             }
             else
             {
-                lblServerModName.ReadOnly = true;
-                lblServerModName.ForeColor = Color.Black;
+                if (darkTheme)
+                {
+                    lblServerModName.ReadOnly = true;
+                    lblServerModName.ForeColor = Color.Silver;
+                }
+                else
+                {
+                    lblServerModName.ReadOnly = true;
+                    lblServerModName.ForeColor = Color.Black;
+                }
             }
         }
 
@@ -1297,7 +2451,8 @@ namespace NativeSPTManager
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejson = File.ReadAllText($"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
+                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -1307,7 +2462,9 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejson, output);
+                            File.WriteAllText(packagejsonPath, output);
+
+                            MessageBox.Show($"Author has been changed to {lblServerModAuthor.Text}!", this.Text, MessageBoxButtons.OK);
                         } else if (i == servermods.Length)
                         {
                             MessageBox.Show($"We\'re sorry, it appears that {serverDisplayMods.SelectedItem.ToString()}\'s package.json can't be accessed. Maybe try refreshing?", this.Text, MessageBoxButtons.OK);
@@ -1336,7 +2493,8 @@ namespace NativeSPTManager
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejson = File.ReadAllText($"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
+                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -1346,7 +2504,9 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejson, output);
+                            File.WriteAllText(packagejsonPath, output);
+
+                            MessageBox.Show($"Version has been changed to {lblServerModVersion.Text}!", this.Text, MessageBoxButtons.OK);
                         }
                         else if (i == servermods.Length)
                         {
@@ -1376,7 +2536,8 @@ namespace NativeSPTManager
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejson = File.ReadAllText($"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
+                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -1386,7 +2547,9 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejson, output);
+                            File.WriteAllText(packagejsonPath, output);
+
+                            MessageBox.Show($"Source has been changed to {lblServerModSrc.Text}!", this.Text, MessageBoxButtons.OK);
                         }
                         else if (i == servermods.Length)
                         {
@@ -1416,7 +2579,8 @@ namespace NativeSPTManager
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejson = File.ReadAllText($"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
+                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -1426,7 +2590,9 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejson, output);
+                            File.WriteAllText(packagejsonPath, output);
+
+                            MessageBox.Show($"Aki Version has been changed to {lblServerModAkiVersion.Text}!", this.Text, MessageBoxButtons.OK);
                         }
                         else if (i == servermods.Length)
                         {
@@ -1456,7 +2622,8 @@ namespace NativeSPTManager
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejson = File.ReadAllText($"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
+                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -1466,11 +2633,13 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejson, output);
+                            File.WriteAllText(packagejsonPath, output);
 
                             CopyDirectory($"{curDir}\\user\\mods\\{clientDisplayMods.SelectedItem.ToString()}",
                                 $"{curDir}\\user\\mods\\{lblServerModName.Text}", true);
                             refreshUI();
+
+                            MessageBox.Show($"Mod name has been changed to {lblServerModName.Text}!", this.Text, MessageBoxButtons.OK);
                         }
                         else if (i == servermods.Length)
                         {
@@ -1520,7 +2689,6 @@ namespace NativeSPTManager
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 e.Effect = DragDropEffects.Copy;
-                bRefresh.Visible = false;
             }
         }
 
@@ -1536,8 +2704,7 @@ namespace NativeSPTManager
 
         private void bRefresh_Click(object sender, EventArgs e)
         {
-            resetUI();
-            refreshUI();
+            
         }
 
         private void mainWindow_DragEnter(object sender, DragEventArgs e)
@@ -1562,7 +2729,7 @@ namespace NativeSPTManager
                 counter++;
                 FileAttributes attr = File.GetAttributes(item);
 
-                if (item.EndsWith(".zip"))
+                if (item.EndsWith(".zip") || item.EndsWith(".7z"))
                 {
                     using (ZipArchive archive = ZipFile.OpenRead(item))
                     {
@@ -1653,9 +2820,10 @@ namespace NativeSPTManager
                         }
 
                     }
-                } else
+                }
+                else
                 {
-                    if ((attr & FileAttributes.Directory) != FileAttributes.Directory) // not a folder
+                    if ((attr & System.IO.FileAttributes.Directory) != System.IO.FileAttributes.Directory) // not a folder
                     {
                         // It's a file, so client mod
                         try
@@ -1762,136 +2930,288 @@ namespace NativeSPTManager
 
         private void btnClientModDisable_Click(object sender, EventArgs e)
         {
-            if (lblClientModType.Text.ToLower().Contains("file"))
+            if (clientConfig.TextLength > 0)
             {
-                // Mod is a client file
-                string[] clientFiles = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
-                foreach (string file in clientFiles)
+                if (MessageBox.Show("A config is currently open, do you still want to disable this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    if (Path.GetFileName(file) == clientDisplayMods.Text)
+                    if (lblClientModType.Text.ToLower().Contains("file"))
                     {
-                        try
+                        // Mod is a client file
+                        string[] clientFiles = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
+                        foreach (string file in clientFiles)
                         {
-                            File.Move(file, $"{documentsDisabledClientFolder}\\{Path.GetFileName(file)}");
-                            MessageBox.Show($"Disabled mod \"{Path.GetFileName(file)}\" -> Disabled Client Mods", this.Text);
+                            if (Path.GetFileName(file) == clientDisplayMods.Text)
+                            {
+                                try
+                                {
+                                    File.Move(file, $"{documentsDisabledClientFolder}\\{Path.GetFileName(file)}");
+                                    MessageBox.Show($"Disabled mod \"{Path.GetFileName(file)}\" -> Disabled Client Mods", this.Text);
 
-                            clientDisplayConfig.Items.Clear();
-                            refreshUI();
+                                    clientDisplayConfig.Items.Clear();
+                                    refreshUI();
+                                }
+                                catch (Exception err)
+                                {
+                                    Debug.WriteLine($"ERROR: {err}");
+                                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                }
+                            }
                         }
-                        catch (Exception err)
+
+                    }
+                    else
+                    {
+                        // Mod is a folder
+                        string[] clientFolders = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
+                        foreach (string folder in clientFolders)
                         {
-                            Debug.WriteLine($"ERROR: {err}");
-                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            if (Path.GetFileName(folder) == clientDisplayMods.Text)
+                            {
+                                try
+                                {
+                                    CopyDirectory(folder, $"{documentsDisabledClientFolder}\\{Path.GetFileName(folder)}", true);
+                                    MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Client Mods", this.Text);
+
+                                    clientDisplayConfig.Items.Clear();
+                                    refreshUI();
+                                }
+                                catch (Exception err)
+                                {
+                                    Debug.WriteLine($"ERROR: {err}");
+                                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                }
+                            }
                         }
+
                     }
                 }
-
             } else
             {
-                // Mod is a folder
-                string[] clientFolders = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
-                foreach (string folder in clientFolders)
+                if (lblClientModType.Text.ToLower().Contains("file"))
                 {
-                    if (Path.GetFileName(folder) == clientDisplayMods.Text)
+                    // Mod is a client file
+                    string[] clientFiles = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
+                    foreach (string file in clientFiles)
                     {
-                        try
+                        if (Path.GetFileName(file) == clientDisplayMods.Text)
                         {
-                            CopyDirectory(folder, $"{documentsDisabledClientFolder}\\{Path.GetFileName(folder)}", true);
-                            MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Client Mods", this.Text);
+                            try
+                            {
+                                File.Move(file, $"{documentsDisabledClientFolder}\\{Path.GetFileName(file)}");
+                                MessageBox.Show($"Disabled mod \"{Path.GetFileName(file)}\" -> Disabled Client Mods", this.Text);
 
-                            clientDisplayConfig.Items.Clear();
-                            refreshUI();
-                        }
-                        catch (Exception err)
-                        {
-                            Debug.WriteLine($"ERROR: {err}");
-                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                clientDisplayConfig.Items.Clear();
+                                refreshUI();
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
                         }
                     }
-                }
 
+                }
+                else
+                {
+                    // Mod is a folder
+                    string[] clientFolders = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
+                    foreach (string folder in clientFolders)
+                    {
+                        if (Path.GetFileName(folder) == clientDisplayMods.Text)
+                        {
+                            try
+                            {
+                                CopyDirectory(folder, $"{documentsDisabledClientFolder}\\{Path.GetFileName(folder)}", true);
+                                MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Client Mods", this.Text);
+
+                                clientDisplayConfig.Items.Clear();
+                                refreshUI();
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
+                        }
+                    }
+
+                }
             }
 
         }
 
         private void btnServerModDisable_Click(object sender, EventArgs e)
         {
-            if (newModLoader)
+            if (serverConfig.TextLength > 0)
             {
-                // 0.13
-                if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
+                if (MessageBox.Show("A config is currently open, do you still want to disable this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    // Mod is a folder
-                    string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
-                    foreach (string folder in servermods)
+                    if (newModLoader)
                     {
-                        if (Path.GetFileName(folder) == serverDisplayMods.Text)
+                        // 0.13
+                        if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
                         {
-                            try
+                            // Mod is a folder
+                            string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                            foreach (string folder in servermods)
                             {
-                                CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
-                                MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
-
-                                string orderFile = $"{curDir}\\user\\mods\\order.json";
-                                string orderJSON = File.ReadAllText(orderFile);
-                                JObject order = JObject.Parse(orderJSON);
-                                JArray array = ((JArray)order["order"]);
-                                array.Clear();
-
-                                serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
-                                foreach (var item in serverDisplayMods.Items)
+                                if (Path.GetFileName(folder) == serverDisplayMods.Text)
                                 {
-                                    array.Add(item.ToString());
+                                    try
+                                    {
+                                        CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                        MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
+
+                                        string orderFile = $"{curDir}\\user\\mods\\order.json";
+                                        string orderJSON = File.ReadAllText(orderFile);
+                                        JObject order = JObject.Parse(orderJSON);
+                                        JArray array = ((JArray)order["order"]);
+                                        array.Clear();
+
+                                        serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
+                                        foreach (var item in serverDisplayMods.Items)
+                                        {
+                                            array.Add(item.ToString());
+                                        }
+
+                                        string output = JsonConvert.SerializeObject(order, Formatting.Indented);
+                                        File.WriteAllText(orderFile, output);
+
+                                        serverDisplayMods.Items.Clear();
+                                        btnServerModDelete.Enabled = false;
+
+                                        resetUI();
+                                        refreshUI();
+                                    }
+                                    catch (Exception err)
+                                    {
+                                        Debug.WriteLine($"ERROR: {err}");
+                                        MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                    }
                                 }
-
-                                string output = JsonConvert.SerializeObject(order, Formatting.Indented);
-                                File.WriteAllText(orderFile, output);
-
-                                serverDisplayMods.Items.Clear();
-                                btnServerModDelete.Enabled = false;
-                                refreshUI();
-                            }
-                            catch (Exception err)
-                            {
-                                Debug.WriteLine($"ERROR: {err}");
-                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
                             }
                         }
                     }
+                    else
+                    {
+                        // 0.12 or pre
+                        if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
+                        {
+                            // Mod is a folder
+                            string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                            foreach (string folder in servermods)
+                            {
+                                if (Path.GetFileName(folder) == serverDisplayMods.Text)
+                                {
+                                    try
+                                    {
+                                        CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                        MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
+
+                                        serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
+
+                                        serverDisplayMods.Items.Clear();
+                                        btnServerModDelete.Enabled = false;
+
+                                        resetUI();
+                                        refreshUI();
+                                    }
+                                    catch (Exception err)
+                                    {
+                                        Debug.WriteLine($"ERROR: {err}");
+                                        MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
                 }
             } else
             {
-                // 0.12 or pre
-                if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
+                if (newModLoader)
                 {
-                    // Mod is a folder
-                    string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
-                    foreach (string folder in servermods)
+                    // 0.13
+                    if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
                     {
-                        if (Path.GetFileName(folder) == serverDisplayMods.Text)
+                        // Mod is a folder
+                        string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                        foreach (string folder in servermods)
                         {
-                            try
+                            if (Path.GetFileName(folder) == serverDisplayMods.Text)
                             {
-                                CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
-                                MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
+                                try
+                                {
+                                    CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                    MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
 
-                                serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
+                                    string orderFile = $"{curDir}\\user\\mods\\order.json";
+                                    string orderJSON = File.ReadAllText(orderFile);
+                                    JObject order = JObject.Parse(orderJSON);
+                                    JArray array = ((JArray)order["order"]);
+                                    array.Clear();
 
-                                serverDisplayMods.Items.Clear();
-                                btnServerModDelete.Enabled = false;
-                                refreshUI();
-                            }
-                            catch (Exception err)
-                            {
-                                Debug.WriteLine($"ERROR: {err}");
-                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                    serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
+                                    foreach (var item in serverDisplayMods.Items)
+                                    {
+                                        array.Add(item.ToString());
+                                    }
+
+                                    string output = JsonConvert.SerializeObject(order, Formatting.Indented);
+                                    File.WriteAllText(orderFile, output);
+
+                                    serverDisplayMods.Items.Clear();
+                                    btnServerModDelete.Enabled = false;
+
+                                    resetUI();
+                                    refreshUI();
+                                }
+                                catch (Exception err)
+                                {
+                                    Debug.WriteLine($"ERROR: {err}");
+                                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                }
                             }
                         }
                     }
                 }
+                else
+                {
+                    // 0.12 or pre
+                    if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
+                    {
+                        // Mod is a folder
+                        string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                        foreach (string folder in servermods)
+                        {
+                            if (Path.GetFileName(folder) == serverDisplayMods.Text)
+                            {
+                                try
+                                {
+                                    CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                    MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
 
+                                    serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
+
+                                    serverDisplayMods.Items.Clear();
+                                    btnServerModDelete.Enabled = false;
+
+                                    resetUI();
+                                    refreshUI();
+                                }
+                                catch (Exception err)
+                                {
+                                    Debug.WriteLine($"ERROR: {err}");
+                                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                }
+                            }
+                        }
+                    }
+
+                }
             }
-
         }
 
         private void lblDisabledModToggle_Click(object sender, EventArgs e)
@@ -1912,6 +3232,7 @@ namespace NativeSPTManager
                             serverDisplayMods.Items.Clear();
                             refreshServerUI();
                             refreshDisabledUI();
+                            countMods();
 
                         }
                         catch (Exception err)
@@ -1940,6 +3261,7 @@ namespace NativeSPTManager
                                 clientDisplayMods.Items.Clear();
                                 refreshClientUI();
                                 refreshDisabledUI();
+                                countMods();
                             }
                             catch (Exception err)
                             {
@@ -1964,6 +3286,7 @@ namespace NativeSPTManager
                                 clientDisplayMods.Items.Clear();
                                 refreshClientUI();
                                 refreshDisabledUI();
+                                countMods();
                             }
                             catch (Exception err)
                             {
@@ -2043,23 +3366,86 @@ namespace NativeSPTManager
         {
             try
             {
+                string selectedMod = serverDisplayMods.SelectedItem.ToString();
                 string selected = serverDisplayConfigs.SelectedItem.ToString();
-                string modFolder = $"{curDir}\\user\\mods";
-                string read = File.ReadAllText($"{modFolder}\\" + // user\mods
-                    $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
-                    $"{serverDisplayConfigs.Tag.ToString()}\\" +
-                    $"{serverDisplayConfigs.SelectedItem.ToString()}"); // config folder -> config file
+                string modFolder = $"{Properties.Settings.Default.server_path}\\user\\mods";
 
+                string fullPath = fullPaths[serverDisplayConfigs.SelectedIndex];
+                serverConfigTitle.Text = fullPath;
+
+                string read = File.ReadAllText(fullPath);
                 dynamic json = JsonConvert.DeserializeObject<dynamic>(read);
-
                 serverConfig.Text = json.ToString();
-                serverConfigTitle.Text = $"{modFolder}\\" + // user\mods
+
+                /*
+                if (Directory.Exists($"{modFolder}\\{selectedMod}\\config"))
+                {
+                    if (File.Exists($"{modFolder}\\" + // user\mods
                     $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
                     $"{serverDisplayConfigs.Tag.ToString()}\\" +
-                    $"{serverDisplayConfigs.SelectedItem.ToString()}"; // config folder -> config file
+                    $"{serverDisplayConfigs.SelectedItem.ToString()}"))
+                    {
+                        string read = File.ReadAllText($"{modFolder}\\" + // user\mods
+                        $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
+                        $"{serverDisplayConfigs.Tag.ToString()}\\" +
+                        $"{serverDisplayConfigs.SelectedItem.ToString()}"); // config folder -> config file
 
+                        dynamic json = JsonConvert.DeserializeObject<dynamic>(read);
+
+                        serverConfig.Text = json.ToString();
+                    }
+
+                    serverConfigTitle.Text = $"{modFolder}\\" + // user\mods
+                        $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
+                        $"{serverDisplayConfigs.Tag.ToString()}\\" +
+                        $"{serverDisplayConfigs.SelectedItem.ToString()}"; // config folder -> config file
+
+                }
+                else if (Directory.Exists($"{modFolder}\\{selectedMod}\\cfg"))
+                {
+                    if (File.Exists($"{modFolder}\\" + // user\mods
+                    $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
+                    $"{serverDisplayConfigs.Tag.ToString()}\\" +
+                    $"{serverDisplayConfigs.SelectedItem.ToString()}"))
+                    {
+                        string read = File.ReadAllText($"{modFolder}\\" + // user\mods
+                        $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
+                        $"{serverDisplayConfigs.Tag.ToString()}\\" +
+                        $"{serverDisplayConfigs.SelectedItem.ToString()}"); // config folder -> config file
+
+                        dynamic json = JsonConvert.DeserializeObject<dynamic>(read);
+
+                        serverConfig.Text = json.ToString();
+                    }
+
+                    serverConfigTitle.Text = $"{modFolder}\\" + // user\mods
+                        $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
+                        $"{serverDisplayConfigs.Tag.ToString()}\\" +
+                        $"{serverDisplayConfigs.SelectedItem.ToString()}"; // config folder -> config file
+
+                }
+                else
+                {
+                    if (File.Exists($"{modFolder}\\{selectedMod}\\{selected}"))
+                    {
+                        string read = File.ReadAllText($"{modFolder}\\" +
+                            $"{serverDisplayMods.SelectedItem.ToString()}\\" +
+                            $"{serverDisplayConfigs.SelectedItem.ToString()}"); // config file
+                        dynamic json = JsonConvert.DeserializeObject<dynamic>(read);
+
+                        serverConfig.Text = json.ToString();
+                    }
+
+                    serverConfigTitle.Text = $"{modFolder}\\" + // user\mods
+                        $"{serverDisplayMods.SelectedItem.ToString()}\\" + // ModName
+                        $"{serverDisplayConfigs.SelectedItem.ToString()}"; // config file
+                }
+                */
+
+                Properties.Settings.Default.configReserve = serverConfig.Text;
                 btnServerConfigOpen.Enabled = true;
                 btnServerConfigValidate.Enabled = true;
+                btnServerConfigRestore.Enabled = true;
 
                 lblServerConfigPlaceholder.Visible = true;
                 serverConfigTitle.Visible = true;
@@ -2071,7 +3457,7 @@ namespace NativeSPTManager
             catch (Exception err)
             {
                 Debug.WriteLine($"ERROR: {err}");
-                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err}", this.Text, MessageBoxButtons.OK);
             }
         }
 
@@ -2082,11 +3468,29 @@ namespace NativeSPTManager
                 string read = serverConfig.Text;
                 var obj = JsonConvert.DeserializeObject(read);
 
-                if (MessageBox.Show($"Validation successful! You can now save via \"Save Config\".", this.Text, MessageBoxButtons.OK) == DialogResult.OK)
+                if (MessageBox.Show($"Validation successful, config saved!", this.Text, MessageBoxButtons.OK) == DialogResult.OK)
                 {
+                    try
+                    {
+                        string configFile = serverConfigTitle.Text;
+                        JObject json = JObject.Parse(read);
+                        string output = JsonConvert.SerializeObject(json, Formatting.Indented);
+                        File.WriteAllText(configFile, output);
+
+                        displayConfigSuccess(false);
+                        topPanel.Select();
+                    }
+                    catch (Exception err)
+                    {
+                        Debug.WriteLine($"ERROR: {err}");
+                        MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                    }
+
+                    /*
                     btnServerConfigSave.Enabled = true;
                     serverConfig.ReadOnly = true;
                     btnServerConfigValidate.Enabled = false;
+                    */
                 }
 
                 serverConfig.SelectionBackColor = Color.FromArgb(255, 45, 45, 45);
@@ -2138,8 +3542,6 @@ namespace NativeSPTManager
                         MessageBox.Show(ex.Message.ToString(), this.Text, MessageBoxButtons.OK);
                     }
 
-                    btnServerConfigSave.Enabled = false;
-
                 }
                 
             }
@@ -2159,23 +3561,7 @@ namespace NativeSPTManager
 
         private void btnServerConfigSave_Click(object sender, EventArgs e)
         {
-            try
-            {
-                string read = serverConfig.Text;
-                string configFile = serverConfigTitle.Text;
-                string orderJSON = File.ReadAllText(configFile);
-                JObject json = JObject.Parse(orderJSON);
-                string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                File.WriteAllText(configFile, output);
-
-                displayConfigSuccess(false);
-                topPanel.Select();
-            }
-            catch (Exception err)
-            {
-                Debug.WriteLine($"ERROR: {err}");
-                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
-            }
+            //
         }
 
         private void clientDisplayConfig_SelectedIndexChanged(object sender, EventArgs e)
@@ -2261,6 +3647,7 @@ namespace NativeSPTManager
                 try
                 {
                     // An item is selected
+                    int originalIndex = serverDisplayMods.SelectedIndex;
                     string orderFile = $"{curDir}\\user\\mods\\order.json";
                     string orderJSON = File.ReadAllText(orderFile);
                     JObject order = JObject.Parse(orderJSON);
@@ -2278,7 +3665,9 @@ namespace NativeSPTManager
 
                         string output = JsonConvert.SerializeObject(order, Formatting.Indented);
                         File.WriteAllText(orderFile, output);
-                        displayMoveSuccess(true, serverDisplayMods.SelectedItem.ToString());
+
+                        int newIndex = serverDisplayMods.SelectedIndex;
+                        displayMoveSuccess(true, serverDisplayMods.SelectedItem.ToString(), originalIndex, newIndex);
                     }
                 }
                 catch (Exception err)
@@ -2296,6 +3685,7 @@ namespace NativeSPTManager
                 try
                 {
                     // An item is selected
+                    int originalIndex = serverDisplayMods.SelectedIndex;
                     string orderFile = $"{curDir}\\user\\mods\\order.json";
                     string orderJSON = File.ReadAllText(orderFile);
                     JObject order = JObject.Parse(orderJSON);
@@ -2313,7 +3703,9 @@ namespace NativeSPTManager
 
                         string output = JsonConvert.SerializeObject(order, Formatting.Indented);
                         File.WriteAllText(orderFile, output);
-                        displayMoveSuccess(false, serverDisplayMods.SelectedItem.ToString());
+
+                        int newIndex = serverDisplayMods.SelectedIndex;
+                        displayMoveSuccess(false, serverDisplayMods.SelectedItem.ToString(), originalIndex, newIndex);
                     }
                 }
                 catch (Exception err)
@@ -2360,59 +3752,120 @@ namespace NativeSPTManager
 
         private void btnClientModDelete_Click(object sender, EventArgs e)
         {
-            string item = $"{curDir}\\BepInEx\\plugins\\{lblClientModName.Text}";
-            if (MessageBox.Show($"Do you wish to delete {clientDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (clientConfig.TextLength > 0)
             {
-                if (lblClientModType.Text.ToLower().Contains("file"))
+                if (MessageBox.Show("A config is currently open, do you still want to delete this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    if (!File.Exists(item))
+                    string item = $"{curDir}\\BepInEx\\plugins\\{lblClientModName.Text}";
+                    if (MessageBox.Show($"Do you wish to delete {clientDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        MessageBox.Show($"{lblClientModName.Text} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (lblClientModType.Text.ToLower().Contains("file"))
+                        {
+                            if (!File.Exists(item))
+                            {
+                                MessageBox.Show($"{lblClientModName.Text} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    File.Delete(item);
+                                }
+                                catch (Exception err)
+                                {
+                                    Debug.WriteLine($"ERROR: {err}");
+                                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                }
+                                MessageBox.Show($"{lblClientModName.Text} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+                            }
+
+                        }
+                        else
+                        {
+                            if (!Directory.Exists(item))
+                            {
+                                MessageBox.Show($"{lblClientModName.Text} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    Directory.Delete(item, true);
+                                }
+                                catch (Exception err)
+                                {
+                                    Debug.WriteLine($"ERROR: {err}");
+                                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                                }
+                                MessageBox.Show($"{lblClientModName.Text} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            }
+
+                        }
+
+
+                        resetUI();
                         refreshClientUI();
-
-                    } else
+                    }
+                }
+            } else
+            {
+                string item = $"{curDir}\\BepInEx\\plugins\\{lblClientModName.Text}";
+                if (MessageBox.Show($"Do you wish to delete {clientDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                {
+                    if (lblClientModType.Text.ToLower().Contains("file"))
                     {
-                        try
+                        if (!File.Exists(item))
                         {
-                            File.Delete(item);
-                        }
-                        catch (Exception err)
-                        {
-                            Debug.WriteLine($"ERROR: {err}");
-                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
-                        }
-                        MessageBox.Show($"{lblClientModName.Text} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show($"{lblClientModName.Text} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        refreshClientUI();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                File.Delete(item);
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
+                            MessageBox.Show($"{lblClientModName.Text} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        }
+
+                    }
+                    else
+                    {
+                        if (!Directory.Exists(item))
+                        {
+                            MessageBox.Show($"{lblClientModName.Text} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Directory.Delete(item, true);
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
+                            MessageBox.Show($"{lblClientModName.Text} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        }
 
                     }
 
-                } else
-                {
-                    if (!Directory.Exists(item))
-                    {
-                        MessageBox.Show($"{lblClientModName.Text} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        refreshClientUI();
-
-                    } else
-                    {
-                        try
-                        {
-                            Directory.Delete(item, true);
-                        }
-                        catch (Exception err)
-                        {
-                            Debug.WriteLine($"ERROR: {err}");
-                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
-                        }
-                        MessageBox.Show($"{lblClientModName.Text} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        refreshClientUI();
-
-                    }
-
+                    resetUI();
+                    refreshClientUI();
                 }
             }
         }
@@ -2427,11 +3880,12 @@ namespace NativeSPTManager
             bool isDone = false;
             if (MessageBox.Show($"Do you wish to delete {lblDisabledModName.Text}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                if (lblDisabledModType.Text.ToLower().Contains("file"))
+                if (lblDisabledModType.Text.ToLower().Contains("client"))
                 {
-                    string[] files = Directory.GetFiles($"{documentsDisabledClientFolder}\\{lblDisabledModName.Text}");
+                    string[] files = Directory.GetFiles(documentsDisabledClientFolder);
                     foreach (string file in files)
                     {
+                        if (Path.GetFileName(file).ToLower() == lblDisabledModName.Text.ToLower())
                         try
                         {
                             if (File.Exists(file))
@@ -2444,32 +3898,7 @@ namespace NativeSPTManager
                         }
                     }
 
-                    refreshDisabledUI();
-                }
-                else if (lblDisabledModType.Text.ToLower().Contains("folder"))
-                {
-                    string[] serverfolders = Directory.GetDirectories(documentsDisabledClientFolder);
-                    string[] clientfolders = Directory.GetDirectories(documentsDisabledServerFolder);
-
-                    foreach (string serverfolder in serverfolders)
-                    {
-                        if (Path.GetFileName(serverfolder).ToLower() == lblDisabledModName.Text.ToLower())
-                        {
-                            try
-                            {
-                                Directory.Delete(serverfolder, true);
-                            }
-                            catch (Exception err)
-                            {
-                                Debug.WriteLine($"ERROR: {err}");
-                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
-                            }
-                            isDone = true;
-                            refreshDisabledUI();
-                            break;
-                        }
-                    }
-
+                    string[] clientfolders = Directory.GetDirectories(documentsDisabledClientFolder);
                     if (!isDone)
                     {
                         foreach (string clientfolder in clientfolders)
@@ -2485,12 +3914,37 @@ namespace NativeSPTManager
                                     Debug.WriteLine($"ERROR: {err}");
                                     MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
                                 }
-                                refreshDisabledUI();
+                                isDone = true;
                                 break;
                             }
                         }
                     }
 
+                    refreshDisabledUI();
+                }
+                else if (lblDisabledModType.Text.ToLower().Contains("server"))
+                {
+                    string[] serverfolders = Directory.GetDirectories(documentsDisabledServerFolder);
+
+                    foreach (string serverfolder in serverfolders)
+                    {
+                        if (Path.GetFileName(serverfolder).ToLower() == lblDisabledModName.Text.ToLower())
+                        {
+                            try
+                            {
+                                Directory.Delete(serverfolder, true);
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
+                            isDone = true;
+                            break;
+                        }
+                    }
+
+                    refreshDisabledUI();
                 }
             }
         }
@@ -2502,79 +3956,75 @@ namespace NativeSPTManager
 
         private void bRestartApp_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"Restart {this.Text}?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
-            {
-                Application.Restart();
-            }
+            
         }
 
         private void btnServerModDelete_Click(object sender, EventArgs e)
         {
-            string item = $"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}";
-            if (MessageBox.Show($"Do you wish to delete {serverDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (serverConfig.TextLength > 0)
             {
-                if (!Directory.Exists(item))
+                if (MessageBox.Show("A config is currently open, do you still want to delete this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string item = $"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}";
+                    if (MessageBox.Show($"Do you wish to delete {serverDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        if (!Directory.Exists(item))
+                        {
+                            MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    refreshServerUI();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Directory.Delete(item, true);
+                            }
+                            catch (Exception err)
+                            {
+                                Debug.WriteLine($"ERROR: {err}");
+                                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            }
+                            MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                        }
+
+                        refreshServerUI();
+                    }
                 }
-                else
+            }
+            else
+            {
+                string item = $"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}";
+                if (MessageBox.Show($"Do you wish to delete {serverDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
-                    try
+                    if (!Directory.Exists(item))
                     {
-                        Directory.Delete(item, true);
+                        MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     }
-                    catch (Exception err)
+                    else
                     {
-                        Debug.WriteLine($"ERROR: {err}");
-                        MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                        try
+                        {
+                            Directory.Delete(item, true);
+                        }
+                        catch (Exception err)
+                        {
+                            Debug.WriteLine($"ERROR: {err}");
+                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                        }
+                        MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     }
-                    MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} deleted succesfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     refreshServerUI();
-
                 }
             }
         }
 
         private void managerMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tabControl1.SelectTab(5);
 
-            if (managerMenu.SelectedIndex > -1)
-            {
-                if (managerMenu.SelectedItem.ToString().ToLower() == "launch spt-aki")
-                {
-                    string currentDir = Directory.GetCurrentDirectory();
-                    Directory.SetCurrentDirectory(curDir);
-                    Process spt = new Process();
-                    spt.StartInfo.FileName = "Aki.Server.exe";
-                    spt.StartInfo.CreateNoWindow = true;
-                    spt.StartInfo.UseShellExecute = false;
-                    spt.StartInfo.RedirectStandardOutput = true;
-                    spt.OutputDataReceived += new DataReceivedEventHandler(onDataReceived);
-
-                    try
-                    {
-                        spt.Start();
-                        spt.BeginOutputReadLine();
-
-                        Directory.SetCurrentDirectory(currentDir);
-                    }
-                    catch (Exception err)
-                    {
-                        Debug.WriteLine($"ERROR: {err.Message.ToString()}");
-                        MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
-                    }
-
-
-                }
-
-            }
-
-            managerMenu.SelectedIndex = -1;
         }
 
         void onDataReceived(object sender, DataReceivedEventArgs e)
@@ -2594,27 +4044,63 @@ namespace NativeSPTManager
 
             try
             {
-                Process[] processes = Process.GetProcessesByName("Node.js JavaScript Runtime");
-                if (processes.Length > 0)
+                if (processToKill != null)
                 {
-                    foreach (Process process in processes)
+                    processToKill.Kill();
+
+                    if (processToKill.HasExited)
                     {
                         try
                         {
-                            string processPath = process.MainModule.FileName;
-                            if (Path.GetFileName(processPath).Equals("Aki.Server.exe"))
-                            {
-                                process.Kill();
-                                MessageBox.Show("Yay");
-                                break;
-                            }
+                            processToKill.Kill();
                         }
                         catch (Exception err)
                         {
-                            // Handle exception
-                            Debug.WriteLine($"ERROR: {err}");
-                            MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                            MessageBox.Show("Ended server process!", this.Text, MessageBoxButtons.OK);
+                            launcherServerOutput.Clear();
+                            btnLauncherEndProcess.Enabled = false;
+                            btnLauncherStartProcess.Enabled = true;
+
+                            lblLauncherServerInfo.Visible = false;
                         }
+                    } else
+                    {
+                        MessageBox.Show("Failed to end server process, we apologize for the inconvenience. Please manually force-close the server.\n", this.Text, MessageBoxButtons.OK);
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+
+
+            try
+            {
+                if (launcherProcess != null)
+                {
+                    launcherProcess.Kill();
+
+                    if (launcherProcess.HasExited)
+                    {
+                        try
+                        {
+                            launcherProcess.Kill();
+                        }
+                        catch (Exception err)
+                        {
+                            MessageBox.Show("Ended server process!", this.Text, MessageBoxButtons.OK);
+                            launcherServerOutput.Clear();
+                            btnLauncherEndProcess.Enabled = false;
+                            btnLauncherStartProcess.Enabled = true;
+
+                            lblLauncherServerInfo.Visible = false;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to end server process, we apologize for the inconvenience. Please manually force-close the server.\n", this.Text, MessageBoxButtons.OK);
                     }
                 }
             }
@@ -2632,29 +4118,50 @@ namespace NativeSPTManager
 
         private void serverConfig_MouseDown(object sender, MouseEventArgs e)
         {
-            int index = serverConfig.GetCharIndexFromPosition(e.Location);
-            int line = serverConfig.GetLineFromCharIndex(index);
-            int start = serverConfig.GetFirstCharIndexFromLine(line);
-            int length = serverConfig.Lines[line].Length;
-            serverConfig.SelectionStart = start;
-            serverConfig.SelectionLength = length;
+            /*
+            if (serverDisplayConfigs.SelectedIndex > -1 && serverDisplayConfigs.Text != "" || serverDisplayConfigs.Text != null)
+            {
+                if (serverConfig.TextLength > 0)
+                {
+                    int index = serverConfig.GetCharIndexFromPosition(e.Location);
+                    int line = serverConfig.GetLineFromCharIndex(index);
+                    int start = serverConfig.GetFirstCharIndexFromLine(line);
+                    int length = serverConfig.Lines[line].Length;
+                    serverConfig.SelectionStart = start;
+                    serverConfig.SelectionLength = length;
+                } else
+                {
+                    topPanel.Select();
+                }
+            }
+            */
         }
 
-        private void btnServerConfigToggle_Click(object sender, EventArgs e)
+                        private void btnServerConfigToggle_Click(object sender, EventArgs e)
         {
-            int currentLine = serverConfig.GetLineFromCharIndex(serverConfig.SelectionStart);
-            int startIndex = serverConfig.GetFirstCharIndexFromLine(currentLine);
-            int length = serverConfig.Lines[currentLine].Length;
-            string line = serverConfig.Lines[currentLine];
-            if (line.Contains("true"))
+            if (serverDisplayConfigs.SelectedIndex > -1 && serverDisplayConfigs.Text != "" || serverDisplayConfigs.Text != null)
             {
-                serverConfig.Select(startIndex, length);
-                serverConfig.SelectedText = line.Replace("true", "false");
-            }
-            else if (line.Contains("false"))
-            {
-                serverConfig.Select(startIndex, length);
-                serverConfig.SelectedText = line.Replace("false", "true");
+                if (serverConfig.TextLength > 0)
+                {
+                    int currentLine = serverConfig.GetLineFromCharIndex(serverConfig.SelectionStart);
+                    int startIndex = serverConfig.GetFirstCharIndexFromLine(currentLine);
+                    int length = serverConfig.Lines[currentLine].Length;
+                    string line = serverConfig.Lines[currentLine];
+                    if (line.Contains("true"))
+                    {
+                        serverConfig.Select(startIndex, length);
+                        serverConfig.SelectedText = line.Replace("true", "false");
+                    }
+                    else if (line.Contains("false"))
+                    {
+                        serverConfig.Select(startIndex, length);
+                        serverConfig.SelectedText = line.Replace("false", "true");
+                    }
+                } else
+                {
+                    topPanel.Select();
+                }
+
             }
         }
 
@@ -2665,20 +4172,276 @@ namespace NativeSPTManager
 
         private void serverConfig_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            int currentLine = serverConfig.GetLineFromCharIndex(serverConfig.SelectionStart);
-            int startIndex = serverConfig.GetFirstCharIndexFromLine(currentLine);
-            int length = serverConfig.Lines[currentLine].Length;
-            string line = serverConfig.Lines[currentLine];
-            if (line.Contains("true"))
+            if (serverDisplayConfigs.SelectedIndex > -1 && serverDisplayConfigs.Text != "" || serverDisplayConfigs.Text != null)
             {
-                serverConfig.Select(startIndex, length);
-                serverConfig.SelectedText = line.Replace("true", "false");
+                if (serverConfig.TextLength > 0)
+                {
+                    int currentLine = serverConfig.GetLineFromCharIndex(serverConfig.SelectionStart);
+                    int startIndex = serverConfig.GetFirstCharIndexFromLine(currentLine);
+                    int length = serverConfig.Lines[currentLine].Length;
+                    string line = serverConfig.Lines[currentLine];
+                    if (line.Contains("true"))
+                    {
+                        serverConfig.Select(startIndex, length);
+                        serverConfig.SelectedText = line.Replace("true", "false");
+                    }
+                    else if (line.Contains("false"))
+                    {
+                        serverConfig.Select(startIndex, length);
+                        serverConfig.SelectedText = line.Replace("false", "true");
+                    }
+                }
+                
             }
-            else if (line.Contains("false"))
+                
+        }
+
+        private void btnServerConfigRestore_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Restore to when the config first loaded?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                serverConfig.Select(startIndex, length);
-                serverConfig.SelectedText = line.Replace("false", "true");
+                serverConfig.Text = Properties.Settings.Default.configReserve;
+                MessageBox.Show("Restored!", this.Text, MessageBoxButtons.OK);
             }
+        }
+
+        private void bTheme_Click(object sender, EventArgs e)
+        {
+            if (darkTheme)
+            {
+                ToggleTheme(false);
+                darkTheme = false;
+            } else
+            {
+                ToggleTheme(true);
+                darkTheme = true;
+            }
+        }
+
+        private void btnProfileDelete_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("This feature is incomplete, we apologize for the inconvenience!", this.Text, MessageBoxButtons.OK);
+        }
+
+        private void btnLauncherStartProcess_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(Path.Combine(Properties.Settings.Default.server_path, "user\\cache")))
+            {
+                try
+                {
+                    Directory.Delete(Path.Combine(Properties.Settings.Default.server_path, "user\\cache"), true);
+                }
+                catch (Exception err)
+                {
+                    Debug.WriteLine($"ERROR: {err.Message.ToString()}");
+                    MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+                }
+            }
+
+            // Server
+            string currentDirServer = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(curDir);
+
+            processToKill = new Process();
+            processToKill.StartInfo.WorkingDirectory = Properties.Settings.Default.server_path;
+            processToKill.StartInfo.FileName = "Aki.Server.exe";
+            processToKill.StartInfo.CreateNoWindow = false;
+            processToKill.StartInfo.UseShellExecute = false;
+            processToKill.StartInfo.RedirectStandardOutput = false;
+            processToKill.OutputDataReceived += new DataReceivedEventHandler(onDataReceived);
+
+            try
+            {
+                processToKill.Start();
+                this.WindowState = FormWindowState.Normal;
+                this.Focus();
+
+                // StartTimer();
+                // btnLauncherStartProcess.Enabled = false;
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err.Message.ToString()}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+
+            Directory.SetCurrentDirectory(currentDirServer);
+
+
+            // Client
+            string currentDirClient = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(curDir);
+
+            launcherProcess = new Process();
+            launcherProcess.StartInfo.WorkingDirectory = Properties.Settings.Default.server_path;
+            launcherProcess.StartInfo.FileName = "Aki.Launcher.exe";
+            launcherProcess.StartInfo.CreateNoWindow = false;
+            launcherProcess.StartInfo.UseShellExecute = false;
+            launcherProcess.StartInfo.RedirectStandardOutput = false;
+            launcherProcess.OutputDataReceived += new DataReceivedEventHandler(onDataReceived);
+
+            try
+            {
+                launcherProcess.Start();
+                this.WindowState = FormWindowState.Normal;
+                this.Focus();
+
+                // StartTimer();
+                // btnLauncherStartProcess.Enabled = false;
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err.Message.ToString()}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+
+            Directory.SetCurrentDirectory(currentDirClient);
+        }
+
+        private void btnLauncherStartLauncher_Click(object sender, EventArgs e)
+        {
+            // StartLauncher();
+        }
+
+        private void btnAppClearCache_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string cacheFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\cache");
+                if (Directory.Exists(cacheFolder))
+                {
+                    Directory.Delete(cacheFolder, true);
+                    MessageBox.Show($"Cleared cache for server {Path.GetFileName(Properties.Settings.Default.server_path)}!", this.Text, MessageBoxButtons.OK);
+                }
+                else
+                {
+                    MessageBox.Show($"No cache folder detected for server {Path.GetFileName(Properties.Settings.Default.server_path)}, you\'re good to go!", this.Text, MessageBoxButtons.OK);
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err.Message.ToString()}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+        }
+
+        private void lblAppProfileEditingToggle_Click(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.profileEditing == true)
+            {
+                Properties.Settings.Default.profileEditing = false;
+                lblAppProfileEditingToggle.Text = "Disabled";
+                lblAppProfileEditingToggle.ForeColor = Color.IndianRed;
+
+                displayProfiles.Enabled = false;
+                lblProfileCharacterId.Enabled = false;
+                lblProfileUsername.Enabled = false;
+                lblProfileGameUsername.Enabled = false;
+                lblProfilePassword.Enabled = false;
+                lblProfileEdition.Enabled = false;
+
+                btnProfileDelete.Enabled = false;
+            } else
+            {
+                Properties.Settings.Default.profileEditing = true;
+                lblAppProfileEditingToggle.Text = "Enabled";
+                lblAppProfileEditingToggle.ForeColor = Color.DodgerBlue;
+
+                displayProfiles.Enabled = true;
+                lblProfileCharacterId.Enabled = true;
+                lblProfileUsername.Enabled = true;
+                lblProfileGameUsername.Enabled = true;
+                lblProfilePassword.Enabled = true;
+
+                lblProfileEdition.Enabled = true;
+            }
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void lblAppLauncherToggle_Click(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.dedicatedLauncher == true)
+            {
+                Properties.Settings.Default.dedicatedLauncher = false;
+                lblAppLauncherToggle.Text = "Disabled";
+                lblAppLauncherToggle.ForeColor = Color.IndianRed;
+
+                btnLauncherStartProcess.Enabled = false;
+                // btnLauncherStartLauncher.Enabled = false;
+            }
+            else
+            {
+                Properties.Settings.Default.dedicatedLauncher = true;
+                lblAppLauncherToggle.Text = "Enabled";
+                lblAppLauncherToggle.ForeColor = Color.DodgerBlue;
+
+                btnLauncherStartProcess.Enabled = true;
+                // btnLauncherStartLauncher.Enabled = true;
+            }
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void lblProfileCharacterId_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAppRefreshUI_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                resetUI();
+                refreshUI();
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err.Message.ToString()}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+        }
+
+        private void appServerSettings_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAppRestart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MessageBox.Show($"Restart {this.Text}?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                {
+                    Application.Restart();
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine($"ERROR: {err.Message.ToString()}");
+                MessageBox.Show($"Oops! It seems like we received an error. If you're uncertain what it\'s about, please message the developer with a screenshot:\n\n{err.Message.ToString()}", this.Text, MessageBoxButtons.OK);
+            }
+        }
+
+        private void btnAppViewChangelog_Click(object sender, EventArgs e)
+        {
+            if (appChangelogBox.Visible)
+            {
+                appChangelogBox.Visible = false;
+                btnAppViewChangelog.Text = "Open changelog";
+
+            } else
+            {
+                appChangelogBox.Visible = true;
+                btnAppViewChangelog.Text = "Close changelog";
+
+            }
+        }
+
+        private void appChangelog_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.SuppressKeyPress = true;
+            e.Handled = true;
         }
     }
 }
