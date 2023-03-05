@@ -32,6 +32,7 @@ using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.
 using System.Xml.Serialization;
 using System.Threading;
 using SharpCompress.Archives.Rar;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace NativeSPTManager
 {
@@ -1069,7 +1070,7 @@ namespace NativeSPTManager
 
         private void checkGameVersion()
         {
-            string orderFile = $"{Properties.Settings.Default.server_path}\\Aki_Data\\Server\\configs\\core.json";
+            string orderFile = Path.Combine(Properties.Settings.Default.server_path, "Aki_Data\\Server\\configs\\core.json");
             string orderJSON = File.ReadAllText(orderFile);
             JObject order = JObject.Parse(orderJSON);
 
@@ -1082,7 +1083,8 @@ namespace NativeSPTManager
 
         private void checkOrderJSON()
         {
-            string order = $"{Properties.Settings.Default.server_path}\\user\\mods\\order.json";
+            string order = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
+
             if (!File.Exists(order))
             {
                 var jsonObject = new { order = new List<string>() };
@@ -1096,7 +1098,7 @@ namespace NativeSPTManager
         {
             try
             {
-                string orderFile = $"{curDir}\\user\\mods\\order.json";
+                string orderFile = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
                 string orderJSON = File.ReadAllText(orderFile);
                 JObject order = JObject.Parse(orderJSON);
                 
@@ -1154,7 +1156,8 @@ namespace NativeSPTManager
             {
                 try
                 {
-                    string[] serverFolders = Directory.GetDirectories($"{curDir}\\user\\mods");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                    string[] serverFolders = Directory.GetDirectories(modsFolder);
                     foreach (string folder in serverFolders)
                     {
                         serverDisplayMods.Items.Add(Path.GetFileName(folder));
@@ -1170,7 +1173,7 @@ namespace NativeSPTManager
             {
                 try
                 {
-                    string orderFile = $"{curDir}\\user\\mods\\order.json";
+                    string orderFile = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
                     string orderJSON = File.ReadAllText(orderFile);
                     JObject order = JObject.Parse(orderJSON);
                     JArray array = ((JArray)order["order"]);
@@ -1196,13 +1199,14 @@ namespace NativeSPTManager
             clientDisplayMods.Items.Clear();
             try
             {
-                string[] clientFolders = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                string[] clientFolders = Directory.GetDirectories(modsFolder);
                 foreach (string folder in clientFolders)
                 {
                     clientDisplayMods.Items.Add(Path.GetFileName(folder));
                 }
 
-                string[] clientFiles = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
+                string[] clientFiles = Directory.GetFiles(modsFolder);
                 foreach (string file in clientFiles)
                 {
                     if (Path.GetFileName(file) != "aki-core.dll" &&
@@ -1226,9 +1230,9 @@ namespace NativeSPTManager
             disabledDisplayMods.Items.Clear();
             try
             {
-                string[] clientfolders = Directory.GetDirectories($"{documentsDisabledClientFolder}");
-                string[] clientfiles = Directory.GetFiles($"{documentsDisabledClientFolder}");
-                string[] servermods = Directory.GetDirectories($"{documentsDisabledServerFolder}");
+                string[] clientfolders = Directory.GetDirectories(documentsDisabledClientFolder);
+                string[] clientfiles = Directory.GetFiles(documentsDisabledClientFolder);
+                string[] servermods = Directory.GetDirectories(documentsDisabledServerFolder);
 
                 foreach (string mod in clientfiles)
                 {
@@ -1256,7 +1260,8 @@ namespace NativeSPTManager
         {
             try
             {
-                string[] profiles = Directory.GetFiles($"{curDir}\\user\\profiles");
+                string profilesFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\profiles");
+                string[] profiles = Directory.GetFiles(profilesFolder);
                 foreach (string profile in profiles)
                 {
                     displayProfiles.Items.Add(Path.GetFileName(profile));
@@ -1546,14 +1551,18 @@ namespace NativeSPTManager
                 serverConfig.Text = "";
                 btnServerConfigToggle.Enabled = false;
 
-                string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                string[] servermods = Directory.GetDirectories(modsFolder);
                 for (int i = 0; i < servermods.Length; i++)
                 {
                     if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                     {
                         enableServerButtons();
 
-                        string packagejson = File.ReadAllText($"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                        string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                        string packageFile = Path.Combine(selectedMod, "package.json");
+
+                        string packagejson = File.ReadAllText(packageFile);
                         JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                         lblServerModAuthor.Text = json["author"].ToString();
@@ -1628,7 +1637,9 @@ namespace NativeSPTManager
                 try
                 {
                     clientDisplayConfig.Items.Clear();
-                    string[] clientmods = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+
+                    string[] clientmods = Directory.GetFiles(modsFolder);
                     for (int i = 0; i < clientmods.Length; i++)
                     {
                         if (Path.GetFileName(clientmods[i]) == clientDisplayMods.SelectedItem.ToString())
@@ -1644,7 +1655,7 @@ namespace NativeSPTManager
                             {
                                 // Checking for config file
                                 string selected = Path.GetFileNameWithoutExtension(clientmods[i]).ToString().ToLower();
-                                string configsFolder = $"{curDir}\\BepInEx\\config";
+                                string configsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\config");
 
                                 string[] configs = Directory.GetFiles(configsFolder);
                                 foreach (string config in configs)
@@ -1691,7 +1702,8 @@ namespace NativeSPTManager
                 try
                 {
                     clientDisplayConfig.Items.Clear();
-                    string[] clientmods = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                    string[] clientmods = Directory.GetDirectories(modsFolder);
                     for (int i = 0; i < clientmods.Length; i++)
                     {
                         if (Path.GetFileName(clientmods[i]) == clientDisplayMods.SelectedItem.ToString())
@@ -1705,7 +1717,7 @@ namespace NativeSPTManager
                             {
                                 // Checking for config file
                                 string selected = Path.GetFileNameWithoutExtension(clientmods[i]).ToString().ToLower();
-                                string configsFolder = $"{curDir}\\BepInEx\\config";
+                                string configsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\config");
 
                                 string[] configs = Directory.GetFiles(configsFolder);
                                 foreach (string config in configs)
@@ -1780,7 +1792,10 @@ namespace NativeSPTManager
                 else
                 {
                     // Mod is a folder
-                    if (File.Exists($"{documentsDisabledServerFolder}\\{disabledDisplayMods.Text}\\package.json"))
+                    string modsFolder = Path.Combine(documentsDisabledServerFolder, disabledDisplayMods.Text);
+                    string packageFile = Path.Combine(modsFolder, "package.json");
+
+                    if (File.Exists(packageFile))
                     {
                         // Server folder
                         try
@@ -1840,7 +1855,10 @@ namespace NativeSPTManager
         {
             try
             {
-                string packagejson = File.ReadAllText($"{curDir}\\user\\profiles\\{displayProfiles.SelectedItem.ToString()}");
+                string profilesFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\profiles");
+                string profilesFile = Path.Combine(profilesFolder, displayProfiles.SelectedItem.ToString());
+
+                string packagejson = File.ReadAllText(profilesFile);
                 JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                 string aid = json["characters"]["pmc"]["aid"].ToString();
@@ -1941,7 +1959,10 @@ namespace NativeSPTManager
         {
             try
             {
-                string profileToRead = File.ReadAllText($"{curDir}\\user\\profiles\\{profileId}");
+                string profilesFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\profiles");
+                string profilesFile = Path.Combine(profilesFolder, profileId);
+
+                string profileToRead = File.ReadAllText(profilesFile);
 
                 JObject json = JsonConvert.DeserializeObject<JObject>(profileToRead);
                 lblServerModAuthor.Text = json["author"].ToString();
@@ -2381,12 +2402,13 @@ namespace NativeSPTManager
         {
             if (e.KeyCode == Keys.Enter)
             {
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
                 e.SuppressKeyPress = true;
                 try
                 {
                     if (lblClientModType.Text.ToLower().Contains("file"))
                     {
-                        string[] clientmods = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
+                        string[] clientmods = Directory.GetFiles(modsFolder);
                         for (int i = 0; i < clientmods.Length; i++)
                         {
                             if (Path.GetFileName(clientmods[i]) == clientDisplayMods.SelectedItem.ToString())
@@ -2395,9 +2417,10 @@ namespace NativeSPTManager
 
                                 if (!lblClientModName.Text.Contains(".dll"))
                                 {
-                                    File.Move($"{curDir}\\BepInEx\\plugins\\{clientDisplayMods.SelectedItem.ToString()}",
-                                             $"{curDir}\\BepInEx\\plugins\\{lblClientModName.Text}.dll");
+                                    string selectedMod = Path.Combine(modsFolder, clientDisplayMods.SelectedItem.ToString());
+                                    string DLLFile = Path.Combine(modsFolder, lblClientModName.Text);
 
+                                    File.Move(selectedMod, $"{DLLFile}.dll");
                                     MessageBox.Show($"Updated mod name from {clientDisplayMods.SelectedItem.ToString()} to {lblClientModName.Text}", this.Text, MessageBoxButtons.OK);
                                 }
                                 else
@@ -2406,10 +2429,9 @@ namespace NativeSPTManager
                                 }
                             }
                         }
-
                     } else
                     {
-                        string[] clientmods = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
+                        string[] clientmods = Directory.GetDirectories(modsFolder);
                         for (int i = 0; i < clientmods.Length; i++)
                         {
                             if (Path.GetFileName(clientmods[i]) == clientDisplayMods.SelectedItem.ToString())
@@ -2418,18 +2440,15 @@ namespace NativeSPTManager
 
                                 if (MessageBox.Show($"Are you sure you want to rename {Path.GetFileName(clientmods[i])} to {lblClientModName.Text}?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                                 {
+                                    string selectedMod = Path.Combine(modsFolder, clientDisplayMods.SelectedItem.ToString());
+                                    string modFolder = Path.Combine(modsFolder, lblClientModName.Text);
 
-                                    CopyDirectory($"{curDir}\\BepInEx\\plugins\\{clientDisplayMods.SelectedItem.ToString()}",
-                                        $"{curDir}\\BepInEx\\plugins\\{lblClientModName.Text}", true);
-
+                                    CopyDirectory(selectedMod, modFolder, true);
+                                    MessageBox.Show($"Updated mod name from {clientDisplayMods.SelectedItem.ToString()} to {lblClientModName.Text}", this.Text, MessageBoxButtons.OK);
                                 }
-                                
                             }
                         }
-
                     }
-
-
                 }
                 catch (Exception err)
                 {
@@ -2445,14 +2464,16 @@ namespace NativeSPTManager
             {
                 try
                 {
-                    string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                    string[] servermods = Directory.GetDirectories(modsFolder);
                     for (int i = 0; i < servermods.Length; i++)
                     {
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
-                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                            string packagejsonFile = Path.Combine(selectedMod, "package.json");
+                            string packagejson = File.ReadAllText(packagejsonFile);
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -2462,7 +2483,7 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejsonPath, output);
+                            File.WriteAllText(packagejsonFile, output);
 
                             MessageBox.Show($"Author has been changed to {lblServerModAuthor.Text}!", this.Text, MessageBoxButtons.OK);
                         } else if (i == servermods.Length)
@@ -2487,14 +2508,16 @@ namespace NativeSPTManager
             {
                 try
                 {
-                    string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                    string[] servermods = Directory.GetDirectories(modsFolder);
                     for (int i = 0; i < servermods.Length; i++)
                     {
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
-                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                            string packagejsonFile = Path.Combine(selectedMod, "package.json");
+                            string packagejson = File.ReadAllText(packagejsonFile);
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -2504,7 +2527,7 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejsonPath, output);
+                            File.WriteAllText(packagejsonFile, output);
 
                             MessageBox.Show($"Version has been changed to {lblServerModVersion.Text}!", this.Text, MessageBoxButtons.OK);
                         }
@@ -2530,14 +2553,16 @@ namespace NativeSPTManager
             {
                 try
                 {
-                    string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                    string[] servermods = Directory.GetDirectories(modsFolder);
                     for (int i = 0; i < servermods.Length; i++)
                     {
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
-                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                            string packagejsonFile = Path.Combine(selectedMod, "package.json");
+                            string packagejson = File.ReadAllText(packagejsonFile);
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -2547,7 +2572,7 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejsonPath, output);
+                            File.WriteAllText(packagejsonFile, output);
 
                             MessageBox.Show($"Source has been changed to {lblServerModSrc.Text}!", this.Text, MessageBoxButtons.OK);
                         }
@@ -2573,14 +2598,16 @@ namespace NativeSPTManager
             {
                 try
                 {
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
                     string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
                     for (int i = 0; i < servermods.Length; i++)
                     {
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
-                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                            string packagejsonFile = Path.Combine(selectedMod, "package.json");
+                            string packagejson = File.ReadAllText(packagejsonFile);
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -2590,7 +2617,7 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejsonPath, output);
+                            File.WriteAllText(packagejsonFile, output);
 
                             MessageBox.Show($"Aki Version has been changed to {lblServerModAkiVersion.Text}!", this.Text, MessageBoxButtons.OK);
                         }
@@ -2616,14 +2643,16 @@ namespace NativeSPTManager
             {
                 try
                 {
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
                     string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
                     for (int i = 0; i < servermods.Length; i++)
                     {
                         if (Path.GetFileName(servermods[i]) == serverDisplayMods.SelectedItem.ToString())
                         {
                             btnServerModDisable.Enabled = true;
-                            string packagejsonPath = $"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json";
-                            string packagejson = File.ReadAllText($"{Properties.Settings.Default.server_path}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}\\package.json");
+                            string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                            string packagejsonFile = Path.Combine(selectedMod, "package.json");
+                            string packagejson = File.ReadAllText(packagejsonFile);
                             JObject json = JsonConvert.DeserializeObject<JObject>(packagejson);
 
                             json["author"] = lblServerModAuthor.Text;
@@ -2633,10 +2662,10 @@ namespace NativeSPTManager
                             json["name"] = lblServerModName.Text;
 
                             string output = JsonConvert.SerializeObject(json, Formatting.Indented);
-                            File.WriteAllText(packagejsonPath, output);
+                            File.WriteAllText(packagejsonFile, output);
 
-                            CopyDirectory($"{curDir}\\user\\mods\\{clientDisplayMods.SelectedItem.ToString()}",
-                                $"{curDir}\\user\\mods\\{lblServerModName.Text}", true);
+                            string selectedNew = Path.Combine(modsFolder, lblServerModName.Text);
+                            CopyDirectory(selectedMod, selectedNew, true);
                             refreshUI();
 
                             MessageBox.Show($"Mod name has been changed to {lblServerModName.Text}!", this.Text, MessageBoxButtons.OK);
@@ -2675,7 +2704,6 @@ namespace NativeSPTManager
             try
             {
                 Process.Start("explorer.exe", serverPath.Text);
-
             }
             catch (Exception err)
             {
@@ -2694,27 +2722,22 @@ namespace NativeSPTManager
 
         private void dragdropWindow_DragDrop(object sender, DragEventArgs e)
         {
-            
         }
 
         private void dragdropWindow_DragLeave(object sender, EventArgs e)
         {
-            
         }
 
         private void bRefresh_Click(object sender, EventArgs e)
         {
-            
         }
 
         private void mainWindow_DragEnter(object sender, DragEventArgs e)
         {
-            
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 e.Effect = DragDropEffects.Copy;
             }
-            
         }
 
         private void mainWindow_DragDrop(object sender, DragEventArgs e)
@@ -2733,28 +2756,37 @@ namespace NativeSPTManager
                 {
                     using (ZipArchive archive = ZipFile.OpenRead(item))
                     {
-                        string path = $"{documentsFolder}\\{Path.GetFileName(item)}";
+                        string path = Path.Combine(documentsFolder, Path.GetFileName(item));
                         archive.ExtractToDirectory(path);
 
+                        string EFTExe = Path.Combine(item, "EscapeFromTarkov.exe");
+                        string AkiExe = Path.Combine(item, "Aki.Server.exe");
+                        string PackageFile = Path.Combine(path, "package.json");
+
+                        string clientModsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                        string serverModsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+
+                        string selectedClientMod = Path.Combine(clientModsFolder, Path.GetFileName(item));
+                        string selectedServerMod = Path.Combine(serverModsFolder, Path.GetFileName(item));
 
                         if (path.EndsWith(".dll"))
                         {
                             // Mod is a client file
-                            File.Move(path, $"{curDir}\\BepInEx\\plugins\\{Path.GetFileName(item)}");
+                            File.Move(path, selectedClientMod);
                             isClientMod = true;
                             clientModCount++;
 
                         }
                         else
                         {
-                            if (File.Exists($"{path}\\EscapeFromTarkov.exe") && File.Exists($"{path}\\Aki.Server.exe"))
+                            if (File.Exists(EFTExe) && File.Exists(AkiExe))
                             {
                                 // Server folder, so put into server path
                                 lblAppServerPath.Text = item;
                                 serverBool = true;
 
                             }
-                            else if (!File.Exists($"{path}\\package.json"))
+                            else if (!File.Exists(PackageFile))
                             {
                                 // Client mod folder
                                 try
@@ -2762,9 +2794,11 @@ namespace NativeSPTManager
                                     string[] identical = Directory.GetDirectories(path);
                                     foreach (string subfolder in identical)
                                     {
-                                        if (File.Exists($"{subfolder}\\package.json"))
+                                        string subPackageFile = Path.Combine(subfolder, "package.json");
+                                        if (File.Exists(subPackageFile))
                                         {
-                                            CopyDirectory(subfolder, $"{curDir}\\user\\mods\\{Path.GetFileName(subfolder)}", true);
+                                            string subFolder = Path.Combine(serverModsFolder, Path.GetFileName(subfolder));
+                                            CopyDirectory(subfolder, subFolder, true);
 
                                             Array.Resize(ref arr, arr.Length + 1);
                                             arr[arr.Length - 1] = $"-> {Path.GetFileName(path)} to user\\mods{Environment.NewLine}";
@@ -2775,7 +2809,8 @@ namespace NativeSPTManager
 
                                         } else
                                         {
-                                            CopyDirectory(subfolder, $"{curDir}\\BepInEx\\plugins\\{Path.GetFileName(subfolder)}", true);
+                                            string subFolder = Path.Combine(clientModsFolder, Path.GetFileName(subfolder));
+                                            CopyDirectory(subfolder, subFolder, true);
 
                                             Array.Resize(ref arr, arr.Length + 1);
                                             arr[arr.Length - 1] = $"-> {Path.GetFileName(path)} to BepInEx\\plugins{Environment.NewLine}";
@@ -2802,7 +2837,7 @@ namespace NativeSPTManager
                                 // Server mod folder
                                 try
                                 {
-                                    CopyDirectory(path, $"{curDir}\\user\\mods\\{Path.GetFileName(item)}", true);
+                                    CopyDirectory(path, selectedServerMod, true);
                                     Array.Resize(ref arr, arr.Length + 1);
                                     arr[arr.Length - 1] = $"-> {Path.GetFileName(path)} to user\\mods{Environment.NewLine}";
 
@@ -2823,12 +2858,19 @@ namespace NativeSPTManager
                 }
                 else
                 {
+                    string EFTExe = Path.Combine(item, "EscapeFromTarkov.exe");
+                    string AkiExe = Path.Combine(item, "Aki.Server.exe");
+                    string PackageFile = Path.Combine(item, "package.json");
+
                     if ((attr & System.IO.FileAttributes.Directory) != System.IO.FileAttributes.Directory) // not a folder
                     {
                         // It's a file, so client mod
                         try
                         {
-                            File.Move(item, $"{curDir}\\BepInEx\\plugins\\{Path.GetFileName(item)}");
+                            string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                            string selectedMod = Path.Combine(modsFolder, Path.GetFileName(item));
+
+                            File.Move(item, selectedMod);
                             Array.Resize(ref arr, arr.Length + 1);
                             arr[arr.Length - 1] = $"-> {Path.GetFileName(item)} to BepInEx\\plugins{Environment.NewLine}";
 
@@ -2843,18 +2885,21 @@ namespace NativeSPTManager
                     }
                     else
                     {
-                        if (File.Exists($"{item}\\EscapeFromTarkov.exe") && File.Exists($"{item}\\Aki.Server.exe"))
+                        if (File.Exists(EFTExe) && File.Exists(AkiExe))
                         {
                             // Server folder, so put into server path
                             lblAppServerPath.Text = item;
                             serverBool = true;
                         }
-                        else if (!File.Exists($"{item}\\package.json"))
+                        else if (!File.Exists(PackageFile))
                         {
                             // Client mod folder
                             try
                             {
-                                CopyDirectory(item, $"{curDir}\\BepInEx\\plugins\\{Path.GetFileName(item)}", true);
+                                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                                string selectedMod = Path.Combine(modsFolder, Path.GetFileName(item));
+
+                                CopyDirectory(item, selectedMod, true);
                                 Array.Resize(ref arr, arr.Length + 1);
                                 arr[arr.Length - 1] = $"-> {Path.GetFileName(item)} to BepInEx\\plugins{Environment.NewLine}";
 
@@ -2872,7 +2917,10 @@ namespace NativeSPTManager
                             // Server mod folder
                             try
                             {
-                                CopyDirectory(item, $"{curDir}\\user\\mods\\{Path.GetFileName(item)}", true);
+                                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                                string selectedMod = Path.Combine(modsFolder, Path.GetFileName(item));
+
+                                CopyDirectory(item, selectedMod, true);
                                 Array.Resize(ref arr, arr.Length + 1);
                                 arr[arr.Length - 1] = $"-> {Path.GetFileName(item)} to user\\mods{Environment.NewLine}";
                             }
@@ -2883,9 +2931,7 @@ namespace NativeSPTManager
                             }
                         }
                     }
-
                 }
-
             }
 
             if (serverBool)
@@ -2932,19 +2978,21 @@ namespace NativeSPTManager
         {
             if (clientConfig.TextLength > 0)
             {
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
                 if (MessageBox.Show("A config is currently open, do you still want to disable this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     if (lblClientModType.Text.ToLower().Contains("file"))
                     {
                         // Mod is a client file
-                        string[] clientFiles = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
+                        string[] clientFiles = Directory.GetFiles(modsFolder);
                         foreach (string file in clientFiles)
                         {
                             if (Path.GetFileName(file) == clientDisplayMods.Text)
                             {
                                 try
                                 {
-                                    File.Move(file, $"{documentsDisabledClientFolder}\\{Path.GetFileName(file)}");
+                                    string selectedMod = Path.Combine(documentsDisabledClientFolder, Path.GetFileName(file));
+                                    File.Move(file, selectedMod);
                                     MessageBox.Show($"Disabled mod \"{Path.GetFileName(file)}\" -> Disabled Client Mods", this.Text);
 
                                     clientDisplayConfig.Items.Clear();
@@ -2957,19 +3005,19 @@ namespace NativeSPTManager
                                 }
                             }
                         }
-
                     }
                     else
                     {
                         // Mod is a folder
-                        string[] clientFolders = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
+                        string[] clientFolders = Directory.GetDirectories(modsFolder);
                         foreach (string folder in clientFolders)
                         {
                             if (Path.GetFileName(folder) == clientDisplayMods.Text)
                             {
                                 try
                                 {
-                                    CopyDirectory(folder, $"{documentsDisabledClientFolder}\\{Path.GetFileName(folder)}", true);
+                                    string selectedMod = Path.Combine(documentsDisabledClientFolder, Path.GetFileName(folder));
+                                    CopyDirectory(folder, selectedMod, true);
                                     MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Client Mods", this.Text);
 
                                     clientDisplayConfig.Items.Clear();
@@ -2982,7 +3030,6 @@ namespace NativeSPTManager
                                 }
                             }
                         }
-
                     }
                 }
             } else
@@ -2990,14 +3037,16 @@ namespace NativeSPTManager
                 if (lblClientModType.Text.ToLower().Contains("file"))
                 {
                     // Mod is a client file
-                    string[] clientFiles = Directory.GetFiles($"{curDir}\\BepInEx\\plugins");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                    string[] clientFiles = Directory.GetFiles(modsFolder);
                     foreach (string file in clientFiles)
                     {
                         if (Path.GetFileName(file) == clientDisplayMods.Text)
                         {
                             try
                             {
-                                File.Move(file, $"{documentsDisabledClientFolder}\\{Path.GetFileName(file)}");
+                                string selectedMod = Path.Combine(documentsDisabledClientFolder, Path.GetFileName(file));
+                                File.Move(file, selectedMod);
                                 MessageBox.Show($"Disabled mod \"{Path.GetFileName(file)}\" -> Disabled Client Mods", this.Text);
 
                                 clientDisplayConfig.Items.Clear();
@@ -3010,19 +3059,20 @@ namespace NativeSPTManager
                             }
                         }
                     }
-
                 }
                 else
                 {
                     // Mod is a folder
-                    string[] clientFolders = Directory.GetDirectories($"{curDir}\\BepInEx\\plugins");
+                    string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                    string[] clientFolders = Directory.GetDirectories(modsFolder);
                     foreach (string folder in clientFolders)
                     {
                         if (Path.GetFileName(folder) == clientDisplayMods.Text)
                         {
                             try
                             {
-                                CopyDirectory(folder, $"{documentsDisabledClientFolder}\\{Path.GetFileName(folder)}", true);
+                                string selectedMod = Path.Combine(documentsDisabledClientFolder, Path.GetFileName(folder));
+                                CopyDirectory(folder, selectedMod, true);
                                 MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Client Mods", this.Text);
 
                                 clientDisplayConfig.Items.Clear();
@@ -3045,6 +3095,7 @@ namespace NativeSPTManager
         {
             if (serverConfig.TextLength > 0)
             {
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
                 if (MessageBox.Show("A config is currently open, do you still want to disable this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     if (newModLoader)
@@ -3053,17 +3104,18 @@ namespace NativeSPTManager
                         if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
                         {
                             // Mod is a folder
-                            string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                            string[] servermods = Directory.GetDirectories(modsFolder);
                             foreach (string folder in servermods)
                             {
                                 if (Path.GetFileName(folder) == serverDisplayMods.Text)
                                 {
                                     try
                                     {
-                                        CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                        string selectedMod = Path.Combine(documentsDisabledServerFolder, Path.GetFileName(folder));
+                                        CopyDirectory(folder, selectedMod, true);
                                         MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
 
-                                        string orderFile = $"{curDir}\\user\\mods\\order.json";
+                                        string orderFile = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
                                         string orderJSON = File.ReadAllText(orderFile);
                                         JObject order = JObject.Parse(orderJSON);
                                         JArray array = ((JArray)order["order"]);
@@ -3099,14 +3151,15 @@ namespace NativeSPTManager
                         if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
                         {
                             // Mod is a folder
-                            string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                            string[] servermods = Directory.GetDirectories(modsFolder);
                             foreach (string folder in servermods)
                             {
                                 if (Path.GetFileName(folder) == serverDisplayMods.Text)
                                 {
                                     try
                                     {
-                                        CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                        string selectedMod = Path.Combine(documentsDisabledServerFolder, Path.GetFileName(folder));
+                                        CopyDirectory(folder, selectedMod, true);
                                         MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
 
                                         serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
@@ -3137,17 +3190,19 @@ namespace NativeSPTManager
                     if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
                     {
                         // Mod is a folder
-                        string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                        string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                        string[] servermods = Directory.GetDirectories(modsFolder);
                         foreach (string folder in servermods)
                         {
                             if (Path.GetFileName(folder) == serverDisplayMods.Text)
                             {
                                 try
                                 {
-                                    CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                    string selectedMod = Path.Combine(documentsDisabledServerFolder, Path.GetFileName(folder));
+                                    CopyDirectory(folder, selectedMod, true);
                                     MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
 
-                                    string orderFile = $"{curDir}\\user\\mods\\order.json";
+                                    string orderFile = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
                                     string orderJSON = File.ReadAllText(orderFile);
                                     JObject order = JObject.Parse(orderJSON);
                                     JArray array = ((JArray)order["order"]);
@@ -3183,14 +3238,16 @@ namespace NativeSPTManager
                     if (serverDisplayMods.Text != "" || serverDisplayMods.Text != null)
                     {
                         // Mod is a folder
-                        string[] servermods = Directory.GetDirectories($"{curDir}\\user\\mods");
+                        string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                        string[] servermods = Directory.GetDirectories(modsFolder);
                         foreach (string folder in servermods)
                         {
                             if (Path.GetFileName(folder) == serverDisplayMods.Text)
                             {
                                 try
                                 {
-                                    CopyDirectory(folder, $"{documentsDisabledServerFolder}\\{Path.GetFileName(folder)}", true);
+                                    string selectedMod = Path.Combine(documentsDisabledServerFolder, Path.GetFileName(folder));
+                                    CopyDirectory(folder, selectedMod, true);
                                     MessageBox.Show($"Disabled mod \"{Path.GetFileName(folder)}\" -> Disabled Server Mods", this.Text);
 
                                     serverDisplayMods.Items.Remove(serverDisplayMods.SelectedItem);
@@ -3219,6 +3276,7 @@ namespace NativeSPTManager
             if (lblDisabledModType.Text.ToLower().Contains("server"))
             {
                 // Mod is a server mod
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
                 string[] servermods = Directory.GetDirectories(documentsDisabledServerFolder);
                 foreach (string folder in servermods)
                 {
@@ -3226,7 +3284,8 @@ namespace NativeSPTManager
                     {
                         try
                         {
-                            CopyDirectory(folder, $"{curDir}\\user\\mods\\{Path.GetFileName(folder)}", true);
+                            string selectedMod = Path.Combine(modsFolder, Path.GetFileName(folder));
+                            CopyDirectory(folder, selectedMod, true);
                             MessageBox.Show($"Enabled mod \"{Path.GetFileName(folder)}\" -> user\\mods", this.Text);
 
                             serverDisplayMods.Items.Clear();
@@ -3245,7 +3304,9 @@ namespace NativeSPTManager
 
             } else if (lblDisabledModType.Text.ToLower().Contains("client"))
             {
-                if (!File.Exists($"{documentsDisabledClientFolder}\\{disabledDisplayMods.Text}"))
+                string disabledMod = Path.Combine(documentsDisabledClientFolder, disabledDisplayMods.Text);
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                if (!File.Exists(disabledMod))
                 {
                     // Mod is a folder
                     string[] clientfolders = Directory.GetDirectories(documentsDisabledClientFolder);
@@ -3255,7 +3316,8 @@ namespace NativeSPTManager
                         {
                             try
                             {
-                                CopyDirectory(folder, $"{curDir}\\BepInEx\\plugins\\{Path.GetFileName(folder)}", true);
+                                string selectedMod = Path.Combine(modsFolder, Path.GetFileName(folder));
+                                CopyDirectory(folder, selectedMod, true);
                                 MessageBox.Show($"Enabled mod \"{Path.GetFileName(folder)}\" -> BepInEx\\plugins", this.Text);
 
                                 clientDisplayMods.Items.Clear();
@@ -3280,7 +3342,8 @@ namespace NativeSPTManager
                         {
                             try
                             {
-                                File.Move(file, $"{curDir}\\BepInEx\\plugins\\{Path.GetFileName(file)}");
+                                string selectedMod = Path.Combine(modsFolder, Path.GetFileName(file));
+                                File.Move(file, selectedMod);
                                 MessageBox.Show($"Enabled client mod \"{Path.GetFileName(file)}\" -> BepInEx\\plugins", this.Text);
 
                                 clientDisplayMods.Items.Clear();
@@ -3307,7 +3370,6 @@ namespace NativeSPTManager
 
         private void panelSettings_Click(object sender, EventArgs e)
         {
-
         }
 
         private void btnAppServerBrowse_Click(object sender, EventArgs e)
@@ -3347,13 +3409,14 @@ namespace NativeSPTManager
 
         private void counterServerMods_Click(object sender, EventArgs e)
         {
-            Process.Start("explorer.exe", $"{curDir}\\user\\mods");
+            string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+            Process.Start("explorer.exe", modsFolder);
         }
 
         private void counterClientMods_Click(object sender, EventArgs e)
         {
-
-            Process.Start("explorer.exe", $"{curDir}\\BepInEx\\plugins");
+            string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+            Process.Start("explorer.exe", modsFolder);
         }
 
         private void counterDisabledMods_Click(object sender, EventArgs e)
@@ -3368,7 +3431,7 @@ namespace NativeSPTManager
             {
                 string selectedMod = serverDisplayMods.SelectedItem.ToString();
                 string selected = serverDisplayConfigs.SelectedItem.ToString();
-                string modFolder = $"{Properties.Settings.Default.server_path}\\user\\mods";
+                string modFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
 
                 string fullPath = fullPaths[serverDisplayConfigs.SelectedIndex];
                 serverConfigTitle.Text = fullPath;
@@ -3452,7 +3515,6 @@ namespace NativeSPTManager
                 btnServerConfigToggle.Enabled = true;
 
                 serverConfig.ReadOnly = false;
-
             }
             catch (Exception err)
             {
@@ -3569,14 +3631,14 @@ namespace NativeSPTManager
             try
             {
                 string selected = clientDisplayConfig.SelectedItem.ToString();
-                string configsFolder = $"{curDir}\\BepInEx\\config";
+                string configsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\config");
 
                 string[] configs = Directory.GetFiles(configsFolder);
                 foreach (string config in configs)
                 {
                     if (Path.GetFileName(config).ToLower().Contains(selected.ToString().ToLower()))
                     {
-                        string activecfg = $"{configsFolder}\\{Path.GetFileName(config)}";
+                        string activecfg = Path.Combine(configsFolder, Path.GetFileName(config));
                         string read = File.ReadAllText(activecfg);
 
                         clientConfig.Text = read;
@@ -3606,7 +3668,7 @@ namespace NativeSPTManager
             {
                 if (MessageBox.Show("Sort mods alphabetically?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
                 {
-                    string orderFile = $"{curDir}\\user\\mods\\order.json";
+                    string orderFile = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
                     string orderJSON = File.ReadAllText(orderFile);
                     JObject order = JObject.Parse(orderJSON);
                     JArray array = ((JArray)order["order"]);
@@ -3648,7 +3710,7 @@ namespace NativeSPTManager
                 {
                     // An item is selected
                     int originalIndex = serverDisplayMods.SelectedIndex;
-                    string orderFile = $"{curDir}\\user\\mods\\order.json";
+                    string orderFile = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
                     string orderJSON = File.ReadAllText(orderFile);
                     JObject order = JObject.Parse(orderJSON);
                     JArray array = ((JArray)order["order"]);
@@ -3686,7 +3748,7 @@ namespace NativeSPTManager
                 {
                     // An item is selected
                     int originalIndex = serverDisplayMods.SelectedIndex;
-                    string orderFile = $"{curDir}\\user\\mods\\order.json";
+                    string orderFile = Path.Combine(Properties.Settings.Default.server_path, "user\\mods\\order.json");
                     string orderJSON = File.ReadAllText(orderFile);
                     JObject order = JObject.Parse(orderJSON);
                     JArray array = ((JArray)order["order"]);
@@ -3754,9 +3816,11 @@ namespace NativeSPTManager
         {
             if (clientConfig.TextLength > 0)
             {
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
                 if (MessageBox.Show("A config is currently open, do you still want to delete this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    string item = $"{curDir}\\BepInEx\\plugins\\{lblClientModName.Text}";
+                    string selectedMod = Path.Combine(modsFolder, lblClientModName.Text);
+                    string item = selectedMod;
                     if (MessageBox.Show($"Do you wish to delete {clientDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         if (lblClientModType.Text.ToLower().Contains("file"))
@@ -3814,7 +3878,9 @@ namespace NativeSPTManager
                 }
             } else
             {
-                string item = $"{curDir}\\BepInEx\\plugins\\{lblClientModName.Text}";
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "BepInEx\\plugins");
+                string selectedMod = Path.Combine(modsFolder, lblClientModName.Text);
+                string item = selectedMod;
                 if (MessageBox.Show($"Do you wish to delete {clientDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     if (lblClientModType.Text.ToLower().Contains("file"))
@@ -3956,22 +4022,22 @@ namespace NativeSPTManager
 
         private void bRestartApp_Click(object sender, EventArgs e)
         {
-            
         }
 
         private void btnServerModDelete_Click(object sender, EventArgs e)
         {
             if (serverConfig.TextLength > 0)
             {
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
                 if (MessageBox.Show("A config is currently open, do you still want to delete this mod?", this.Text, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    string item = $"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}";
+                    string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                    string item = selectedMod;
                     if (MessageBox.Show($"Do you wish to delete {serverDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         if (!Directory.Exists(item))
                         {
                             MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                         }
                         else
                         {
@@ -3994,13 +4060,14 @@ namespace NativeSPTManager
             }
             else
             {
-                string item = $"{curDir}\\user\\mods\\{serverDisplayMods.SelectedItem.ToString()}";
+                string modsFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\mods");
+                string selectedMod = Path.Combine(modsFolder, serverDisplayMods.SelectedItem.ToString());
+                string item = selectedMod;
                 if (MessageBox.Show($"Do you wish to delete {serverDisplayMods.SelectedItem.ToString()}? This action is irreversible.", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     if (!Directory.Exists(item))
                     {
                         MessageBox.Show($"{serverDisplayMods.SelectedItem.ToString()} does not appear to exist, removing its info.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                     }
                     else
                     {
@@ -4137,7 +4204,7 @@ namespace NativeSPTManager
             */
         }
 
-                        private void btnServerConfigToggle_Click(object sender, EventArgs e)
+        private void btnServerConfigToggle_Click(object sender, EventArgs e)
         {
             if (serverDisplayConfigs.SelectedIndex > -1 && serverDisplayConfigs.Text != "" || serverDisplayConfigs.Text != null)
             {
@@ -4225,11 +4292,12 @@ namespace NativeSPTManager
 
         private void btnLauncherStartProcess_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(Path.Combine(Properties.Settings.Default.server_path, "user\\cache")))
+            string cacheFolder = Path.Combine(Properties.Settings.Default.server_path, "user\\cache");
+            if (Directory.Exists(cacheFolder))
             {
                 try
                 {
-                    Directory.Delete(Path.Combine(Properties.Settings.Default.server_path, "user\\cache"), true);
+                    Directory.Delete(cacheFolder, true);
                 }
                 catch (Exception err)
                 {
@@ -4385,7 +4453,6 @@ namespace NativeSPTManager
 
         private void lblProfileCharacterId_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void btnAppRefreshUI_Click(object sender, EventArgs e)
