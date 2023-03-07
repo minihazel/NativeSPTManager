@@ -95,7 +95,6 @@ namespace NativeSPTManager
 
                     if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                     {
-
                         lblAppServerPath.Text = dialog.FileName;
                         serverPath.Text = Properties.Settings.Default.server_path;
                         Properties.Settings.Default.server_path = dialog.FileName;
